@@ -1,5 +1,3 @@
--- Change the default Omarchy look'n'feel.
-
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#general
 hl.config({
 	general = {
@@ -52,8 +50,8 @@ hl.config({
 		},
 
 		-- Use theme default
-		active_opacity = 1.0,
-		inactive_opacity = 1.0,
+		active_opacity = 0.98,
+		inactive_opacity = 0.94,
 		fullscreen_opacity = 1.0,
 	},
 	group = {
@@ -110,7 +108,7 @@ hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 3, bezier = "line
 
 hl.animation({ leaf = "fade", enabled = true, speed = 4, bezier = "smooth" })
 
-o.window({ tag = "default-opacity" }, { opacity = "0.98 0.96" })
+-- o.window({ tag = "default-opacity" }, { opacity = "0.98 0.96" })
 
 -- Workspace switch anim
 -- hl.animation({ leaf = "workspaces", enabled = true, speed = 4, bezier = "calm" })

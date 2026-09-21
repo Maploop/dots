@@ -1,1 +1,6 @@
-o.window("^(jetbrains-.*)$", { no_follow_mouse = true })
+hl.window_rule({
+    match = {
+        class = "^jetbrains-.*$",
+    },
+    no_follow_mouse = true,
+})
