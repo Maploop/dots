@@ -13,14 +13,8 @@ hl.bind(mainMod .. " + DOWN", hl.dsp.focus({ direction = "d" }))
 
 for workspace = 1, 10 do
 	local key = "code:" .. tostring(workspace + 9)
-	hl.bind(
-		mainMod .. " + " .. key,
-		hl.dsp.focus({ workspace = tostring(workspace) })
-	)
-	hl.bind(
-		mainMod .. " + SHIFT + " .. key,
-		hl.dsp.window.move({ workspace = tostring(workspace) })
-	)
+	hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = tostring(workspace) }))
+	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = tostring(workspace) }))
 	hl.bind(
 		mainMod .. " + SHIFT + ALT + " .. key,
 		hl.dsp.window.move({ workspace = tostring(workspace), follow = false })
@@ -28,10 +22,7 @@ for workspace = 1, 10 do
 end
 
 hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("scratchpad"))
-hl.bind(
-	mainMod .. " + ALT + S",
-	hl.dsp.window.move({ workspace = "special:scratchpad", follow = false })
-)
+hl.bind(mainMod .. " + ALT + S", hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }))
 
 hl.bind(mainMod .. " + TAB", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + SHIFT + TAB", hl.dsp.focus({ workspace = "e-1" }))
@@ -69,10 +60,7 @@ hl.bind(mainMod .. " + ALT + mouse_down", hl.dsp.group.next())
 hl.bind(mainMod .. " + ALT + mouse_up", hl.dsp.group.prev())
 
 for index = 1, 5 do
-	hl.bind(
-		mainMod .. " + ALT + code:" .. tostring(index + 9),
-		hl.dsp.group.active({ index = index })
-	)
+	hl.bind(mainMod .. " + ALT + code:" .. tostring(index + 9), hl.dsp.group.active({ index = index }))
 end
 
 hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd("pavucontrol"))
@@ -85,3 +73,4 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("nautilus"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wallpaper-selector"))
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("kitty gazelle"))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("kitty"))
+hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -z -m region"))
