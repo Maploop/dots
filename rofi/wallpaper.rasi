@@ -10,26 +10,32 @@ configuration {
     animation: false;
 }
 
-/* ── Palette ──────────────────────────────────────────────────────────── */
+
+/* ── Even Darker Nord Palette ────────────────────────────────────────── */
 
 * {
-    bg0:     #141319;
-    bg1:     #232236;
-    bg2:     #302f4d;
-    bg3:     #5b547e;
+    /* Backgrounds */
+    bg0:     #080A0E;
+    bg1:     #0D1117;
+    bg2:     #11151C;
+    bg3:     #343D4B;
 
-    fg0:     #d3c8f5;
-    fg1:     #8f82b8;
-    fg2:     #7b73a2;
+    /* Foreground */
+    fg0:     #D8DEE9;
+    fg1:     #AAB4C3;
+    fg2:     #667085;
 
-    red:     #ff757f;
-    green:   #c3e88d;
-    yellow:  #ffc777;
-    blue:    #82aaff;
-    magenta: #c099ff;
-    cyan:    #86e1fc;
-    purple:  #fca7ea;
+    /* Nord accents */
+    red:     #BF616A;
+    green:   #A3BE8C;
+    yellow:  #EBCB8B;
+    blue:    #5E81AC;
+    magenta: #B48EAD;
+    cyan:    #88C0D0;
+    purple:  #B48EAD;
+    teal:    #8FBCBB;
 
+    /* Semantic colors */
     accent:  @blue;
     urgent:  @yellow;
 
@@ -37,20 +43,23 @@ configuration {
     text-color: @fg0;
 }
 
+
 /* ── Window ───────────────────────────────────────────────────────────── */
 
 window {
     width: 950px;
     height: 400px;
+
     background-color: @bg0;
 
     border: 1px;
-    border-color: @fg2;
+    border-color: @bg3;
 
     border-radius: 0px;
 
     padding: 0px;
 }
+
 
 /* ── Main box ─────────────────────────────────────────────────────────── */
 
@@ -66,10 +75,11 @@ mainbox {
     padding: 12px;
 }
 
+
 /* ── Input bar ────────────────────────────────────────────────────────── */
 
 inputbar {
-    background-color: @bg0;
+    background-color: @bg2;
 
     padding: 1px 10px;
 
@@ -104,6 +114,7 @@ entry {
     cursor: text;
 }
 
+
 /* ── Wallpaper list ──────────────────────────────────────────────────── */
 
 listview {
@@ -119,6 +130,7 @@ listview {
 
     scrollbar: false;
 }
+
 
 /* ── Wallpaper elements ──────────────────────────────────────────────── */
 
@@ -139,32 +151,36 @@ element {
     cursor: pointer;
 }
 
-/* Normal */
+
+/* ── Normal ───────────────────────────────────────────────────────────── */
 
 element normal.normal {
     background-color: transparent;
     text-color: @fg0;
 }
 
-/* Alternate rows */
+
+/* ── Alternate rows ──────────────────────────────────────────────────── */
 
 element alternate.normal {
     background-color: transparent;
     text-color: @fg0;
 }
 
-/* Selected */
+
+/* ── Selected ─────────────────────────────────────────────────────────── */
 
 element selected.normal {
-    background-color: @fg1;
+    background-color: @bg2;
 
-    text-color: @bg0;
+    text-color: @fg0;
 
     border: 1px;
     border-color: @accent;
 }
 
-/* ── Thumbnail ───────────────────────────────────────────────────────── */
+
+/* ── Thumbnail ────────────────────────────────────────────────────────── */
 
 element-icon {
     background-color: transparent;
@@ -174,7 +190,8 @@ element-icon {
     cursor: inherit;
 }
 
-/* ── Filename ────────────────────────────────────────────────────────── */
+
+/* ── Filename ─────────────────────────────────────────────────────────── */
 
 element-text {
     background-color: transparent;
@@ -188,6 +205,7 @@ element-text {
 
     //ellipsize: end;
 }
+
 
 /* ── Scrollbar ────────────────────────────────────────────────────────── */
 
