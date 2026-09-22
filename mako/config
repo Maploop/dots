@@ -1,15 +1,17 @@
-# Colors
-background-color=#231e2e
-text-color=#dacdf4
-border-color=#c3b4fe
-progress-color=over #373144
+# Even Darker Nord
+
+background-color=#080A0E
+text-color=#D8DEE9
+border-color=#5E81AC
+progress-color=over #11151C
+
 font=Iosevka Nerd Font 11
 default-timeout=5000
 width=430
 height=600
 
 [urgency=high]
-border-color=#fab387
+border-color=#BF616A
 
 # Hide specific notifications
 [summary="Wayland Diagnose"]
