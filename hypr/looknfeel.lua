@@ -1,4 +1,6 @@
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#general
+local colors = require("colors")
+-- old border; AB6BFF
 hl.config({
 	general = {
 		layout = "dwindle",
@@ -6,7 +8,7 @@ hl.config({
 		gaps_out = 6,
 		border_size = 2,
 		col = {
-			active_border = "#AB6BFF",
+			active_border = colors.red,
 		},
 		resize_on_border = false,
 		allow_tearing = false,
@@ -33,7 +35,7 @@ hl.config({
 		hide_special_on_workspace_change = true,
 	},
 	decoration = {
-		rounding = 7,
+		rounding = 0,
 		rounding_power = 2,
 
 		blur = {

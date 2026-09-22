@@ -1,6 +1,3 @@
--- Keep only your personal input overrides here. Uncommented settings below
--- replace Omarchy's defaults.
-
 -- Keyboard layout and options.
 -- See https://wiki.hypr.land/Configuring/Basics/Variables/#input
 hl.config({
@@ -9,25 +6,23 @@ hl.config({
 		kb_layout = "us",
 		kb_options = "grp:alt_shift_toggle,compose:caps",
 
-		-- Start with numlock on by default.
-		numlock_by_default = true,
-
 		-- Increase sensitivity for mouse/trackpad (default: 0).
 		sensitivity = 0,
 
 		-- Turn off mouse acceleration (default: adaptive).
 		accel_profile = "flat",
+
+		repeat_rate = 40,
+		repeat_delay = 250,
+		numlock_by_default = true,
+	},
+
+	misc = {
+		key_press_enables_dpms = true,
+		mouse_move_enables_dpms = true,
 	},
 })
 
 -- App-specific touchpad scroll speeds.
 -- o.window("(Alacritty|kitty|foot)", { scroll_touchpad = 1.5 })
 -- o.window("com.mitchellh.ghostty", { scroll_touchpad = 0.2 })
-
--- Enable touchpad gestures for changing workspaces.
--- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
--- hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
-
--- Enable touchpad gestures for moving focus (helpful on scrolling layout).
--- hl.gesture({ fingers = 3, direction = "left", action = function() hl.dispatch(hl.dsp.focus({ direction = "l" })) end })
--- hl.gesture({ fingers = 3, direction = "right", action = function() hl.dispatch(hl.dsp.focus({ direction = "r" })) end })

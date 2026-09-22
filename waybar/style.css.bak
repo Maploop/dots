@@ -1,4 +1,6 @@
-@define-color secondary #343D4B;
+/* @secondary is referenced by #battery below but was never defined, so GTK
+   dropped that rule silently. Defined here to match the rest of the palette. */
+@define-color secondary #e3e1e9;
 
 * {
     font-family: Iosevka Nerd Font;
@@ -10,8 +12,8 @@
 }
 
 window#waybar {
-    background-color: rgba(8, 10, 14, 1);
-    color: #D8DEE9;
+    background-color: rgba(0, 0, 0, 1);
+    color: #e3e1e9;
     transition: background-color 0.3s ease;
 }
 
@@ -21,40 +23,40 @@ window#waybar {
     padding: 0px 0px;
 }
 
+
 #workspaces button {
     padding: 0px 7px;
     margin: 0px;
-    color: #D8DEE9;
+    color: #e3e1e9;
     background-color: transparent;
     box-shadow: none;
 }
 
 #workspaces button.empty {
-    color: #D8DEE9;
+    color: #e3e1e9;
     opacity: 0.35;
 }
 
 #workspaces button:hover {
-    color: #ECEFF4;
+    color: #cbcbcb;
     opacity: 1;
-    background: #151B23;
+    background: #222222;
 }
 
 #workspaces button.active {
-    background: #D8DEE9;
-    color: #080A0E;
+    background: #cbcbcb;
+    color: #121318;
 }
 
 #workspaces button.urgent {
-    color: #BF616A;
-    border-bottom: 2px solid alpha(#BF616A, 0.75);
+    color: #e3e1e9;
+    border-bottom: 2px solid alpha(#e3e1e9, 0.75);
     animation: blink 0.8s step-end infinite;
 }
 
 #window {
-    padding: 0px 5px;
+padding: 0px 5px;
 }
-
 #clock,
 #custom-dnd,
 #custom-fcitx5,
@@ -65,8 +67,8 @@ window#waybar {
 #cpu,
 #memory,
 #tray {
-    padding: 0px 8px;
-    color: #D8DEE9;
+padding: 0px 8px;
+color: #e3e1e9;
 }
 
 /* The Japanese glyph is wider than the two-letter latin labels; a floor here
@@ -76,8 +78,9 @@ window#waybar {
 }
 
 #custom-fcitx5.off {
-    color: alpha(#D8DEE9, 0.40);
+    color: alpha(#e3e1e9, 0.40);
 }
+
 
 #battery {
     background-color: alpha(@secondary, 0.20);
@@ -88,49 +91,49 @@ window#waybar {
 
 #battery.charging,
 #battery.plugged {
-    color: #A3BE8C;
+    color: #e3e1e9;
 }
 
 #battery.warning:not(.charging) {
-    color: alpha(#EBCB8B, 0.85);
+    color: alpha(#e3e1e9, 0.75);
 }
 
 #battery.critical:not(.charging) {
-    color: #BF616A;
+    color: #c7d17a;
     animation: blink 1s step-end infinite;
 }
 
 #cpu.warning,
 #memory.warning {
-    color: #EBCB8B;
+color: #c7d17a;
 }
 
 #cpu.critical,
 #memory.critical {
-    color: #BF616A;
+color: #8a3b2e;
 }
 
 #pulseaudio.muted {
-    color: #BF616A;
+color: #8a3b2e;
 }
 
 #network.disconnected {
-    color: alpha(#D8DEE9, 0.40);
+    color: alpha(#e3e1e9, 0.40);
 }
 
 tooltip {
-    background-color: #080A0E;
-    border: 1px solid alpha(#81A1C1, 0.25);
-    color: #D8DEE9;
+    background-color: #000000;
+    border: 1px solid alpha(#f0e4cf, 0.20);
+    color: #e3e1e9;
 }
 
 tooltip label {
-    color: #D8DEE9;
+    color: #e3e1e9;
 }
 
 @keyframes blink {
     to {
-        color: #080A0E;
-        background-color: #D8DEE9;
+        color: #121318;
+        background-color: #e3e1e9;
     }
 }
