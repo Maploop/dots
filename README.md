@@ -7,3 +7,4 @@ My arch + Hyprland Dots
 3. `./setup.sh`
 
 dont forget chmod if it's required
+old configs will be backed up in a folder called `old.bak` inside of the repo's root
