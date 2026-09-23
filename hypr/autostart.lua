@@ -9,11 +9,11 @@ local wallpaper_cache = os.getenv("HOME") .. "/.cache/current-wallpaper"
 -- ---------------------------------------------------------------- autostart
 
 local function shell_quote(value)
-  return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
+	return "'" .. tostring(value):gsub("'", "'\\''") .. "'"
 end
 
 local function launch(command)
-  return "uwsm-app -- " .. command
+	return "uwsm-app -- " .. command
 end
 
 hl.env("HYPRCURSOR_THEME", "cz-Hickson-White")

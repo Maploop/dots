@@ -1,4 +1,4 @@
-@define-color secondary #343D4B;
+@define-color secondary #11131A;
 
 * {
     font-family: Iosevka Nerd Font;
@@ -10,8 +10,8 @@
 }
 
 window#waybar {
-    background-color: rgba(8, 10, 14, 1);
-    color: #D8DEE9;
+    background-color: rgba(8, 9, 13, 1);
+    color: #C0CAF5;
     transition: background-color 0.3s ease;
 }
 
@@ -24,30 +24,30 @@ window#waybar {
 #workspaces button {
     padding: 0px 7px;
     margin: 0px;
-    color: #D8DEE9;
+    color: #C0CAF5;
     background-color: transparent;
     box-shadow: none;
 }
 
 #workspaces button.empty {
-    color: #D8DEE9;
+    color: #C0CAF5;
     opacity: 0.35;
 }
 
 #workspaces button:hover {
-    color: #ECEFF4;
+    color: #E6E9FF;
     opacity: 1;
-    background: #151B23;
+    background: #11131A;
 }
 
 #workspaces button.active {
-    background: #D8DEE9;
-    color: #080A0E;
+    background: #C0CAF5;
+    color: #08090D;
 }
 
 #workspaces button.urgent {
-    color: #BF616A;
-    border-bottom: 2px solid alpha(#BF616A, 0.75);
+    color: #F7768E;
+    border-bottom: 2px solid alpha(#F7768E, 0.75);
     animation: blink 0.8s step-end infinite;
 }
 
@@ -66,7 +66,7 @@ window#waybar {
 #memory,
 #tray {
     padding: 0px 8px;
-    color: #D8DEE9;
+    color: #C0CAF5;
 }
 
 /* The Japanese glyph is wider than the two-letter latin labels; a floor here
@@ -76,7 +76,7 @@ window#waybar {
 }
 
 #custom-fcitx5.off {
-    color: alpha(#D8DEE9, 0.40);
+    color: alpha(#C0CAF5, 0.40);
 }
 
 #battery {
@@ -88,49 +88,49 @@ window#waybar {
 
 #battery.charging,
 #battery.plugged {
-    color: #A3BE8C;
+    color: #9ECE6A;
 }
 
 #battery.warning:not(.charging) {
-    color: alpha(#EBCB8B, 0.85);
+    color: alpha(#E0AF68, 0.85);
 }
 
 #battery.critical:not(.charging) {
-    color: #BF616A;
+    color: #F7768E;
     animation: blink 1s step-end infinite;
 }
 
 #cpu.warning,
 #memory.warning {
-    color: #EBCB8B;
+    color: #E0AF68;
 }
 
 #cpu.critical,
 #memory.critical {
-    color: #BF616A;
+    color: #F7768E;
 }
 
 #pulseaudio.muted {
-    color: #BF616A;
+    color: #F7768E;
 }
 
 #network.disconnected {
-    color: alpha(#D8DEE9, 0.40);
+    color: alpha(#C0CAF5, 0.40);
 }
 
 tooltip {
-    background-color: #080A0E;
-    border: 1px solid alpha(#81A1C1, 0.25);
-    color: #D8DEE9;
+    background-color: #08090D;
+    border: 1px solid alpha(#8DB3FF, 0.25);
+    color: #C0CAF5;
 }
 
 tooltip label {
-    color: #D8DEE9;
+    color: #C0CAF5;
 }
 
 @keyframes blink {
     to {
-        color: #080A0E;
-        background-color: #D8DEE9;
+        color: #08090D;
+        background-color: #C0CAF5;
     }
 }

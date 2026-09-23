@@ -25,30 +25,31 @@ configuration {
 
 @theme "storm"
 
-/* ── Even Darker Nord Palette ────────────────────────────────────────── */
+ /* ── very dark tokyo night palette ───────────────────────────────────── */
+
 * {
-    /* Backgrounds */
-    bg0:     #080A0E;   /* main background */
-    bg1:     #0D1117;   /* elevated background */
-    bg2:     #11151C;   /* surface */
-    bg3:     #343D4B;   /* border / selected surface */
+    /* backgrounds */
+    bg0:     #08090d;   /* main background */
+    bg1:     #0d1017;   /* elevated background */
+    bg2:     #11131a;   /* surface */
+    bg3:     #292d3e;   /* border / selected surface */
 
-    /* Foreground */
-    fg0:     #D8DEE9;   /* primary text */
-    fg1:     #AAB4C3;   /* secondary text */
-    fg2:     #667085;   /* muted text */
+    /* foreground */
+    fg0:     #c0caf5;   /* primary text */
+    fg1:     #7a819b;   /* secondary text */
+    fg2:     #4f5570;   /* muted text */
 
-    /* Nord accents */
-    red:     #BF616A;
-    green:   #A3BE8C;
-    yellow:  #EBCB8B;
-    blue:    #5E81AC;
-    magenta: #B48EAD;
-    cyan:    #88C0D0;
-    purple:  #B48EAD;
-    teal:    #8FBCBB;
+    /* tokyo night accents */
+    red:     #f7768e;
+    green:   #9ece6a;
+    yellow:  #e0af68;
+    blue:    #7aa2f7;
+    magenta: #bb9af7;
+    cyan:    #7dcfff;
+    purple:  #bb9af7;
+    teal:    #73daca;
 
-    /* Semantic colors */
+    /* semantic colors */
     accent:  @blue;
     urgent:  @yellow;
 

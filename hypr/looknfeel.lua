@@ -39,9 +39,9 @@ hl.config({
 		rounding_power = 2,
 
 		blur = {
-			enabled = false,
+			enabled = true,
 			size = 3,
-			passes = 1,
+			passes = 2,
 			contrast = 1.1,
 			brightness = 1.1,
 			vibrancy = 0.2,
@@ -52,8 +52,8 @@ hl.config({
 		},
 
 		-- Use theme default
-		active_opacity = 0.98,
-		inactive_opacity = 0.94,
+		active_opacity = 0.96,
+		inactive_opacity = 0.90,
 		fullscreen_opacity = 1.0,
 	},
 	group = {

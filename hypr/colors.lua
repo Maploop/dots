@@ -1,20 +1,20 @@
 return {
 	-- Background / surfaces
-	bg = "#080A0E",
-	surface = "#11151C",
-	border = "#343D4B",
+	bg = "#08090D",
+	surface = "#11131A",
+	border = "#292D3E",
 
 	-- Foreground
-	fg = "#D8DEE9",
-	fg_bright = "#ECEFF4",
+	fg = "#C0CAF5",
+	fg_bright = "#E6E9FF",
 
 	-- Accents
-	blue = "#5E81AC",
-	cyan = "#88C0D0",
-	sky = "#81A1C1",
-	green = "#A3BE8C",
-	yellow = "#EBCB8B",
-	red = "#BF616A",
-	purple = "#B48EAD",
-	teal = "#8FBCBB",
+	blue = "#7AA2F7",
+	cyan = "#7DCFFF",
+	sky = "#8DB3FF",
+	green = "#9ECE6A",
+	yellow = "#E0AF68",
+	red = "#F7768E",
+	purple = "#BB9AF7",
+	teal = "#73DACA",
 }
