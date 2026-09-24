@@ -9,6 +9,7 @@ hl.config({
 		border_size = 2,
 		col = {
 			active_border = colors.red,
+			inactive_border = colors.border,
 		},
 		resize_on_border = false,
 		allow_tearing = false,
@@ -35,7 +36,7 @@ hl.config({
 		hide_special_on_workspace_change = true,
 	},
 	decoration = {
-		rounding = 0,
+		rounding = 12,
 		rounding_power = 2,
 
 		blur = {

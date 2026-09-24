@@ -19,6 +19,7 @@ require("hypr.apps.localsend")
 require("hypr.apps.telegram")
 require("hypr.apps.bitwarden")
 require("hypr.apps.xwaylandapps")
+require("hypr.apps.mpv")
 
 -- Toggle config flags dynamically.
 --require("default.hypr.toggles")

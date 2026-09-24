@@ -4,7 +4,7 @@ hl.window_rule({
 	},
 	float = true,
 	idle_inhibit = "fullscreen",
-	opacity = "1",
+	opaque = true,
 })
 
 hl.window_rule({
@@ -13,7 +13,7 @@ hl.window_rule({
 		title = "^Steam$",
 	},
 	center = true,
-	opacity = "1",
+	opaque = true,
 	size = { 1100, 700 },
 })
 
@@ -21,7 +21,7 @@ hl.window_rule({
 	match = {
 		class = "^steam.*$",
 	},
-	opacity = "1",
+	opaque = true,
 })
 
 hl.window_rule({
