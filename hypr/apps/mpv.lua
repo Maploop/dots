@@ -4,4 +4,5 @@ hl.window_rule({
 	},
 	float = true,
 	opaque = true,
+	size = { 1280, 720 },
 })

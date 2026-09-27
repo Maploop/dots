@@ -1,8 +1,8 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 20,
-    "spacing": 5,
+    "height": 23,
+    "spacing": 1,
 
     "modules-left": [
         "hyprland/workspaces",
@@ -19,12 +19,11 @@
         "memory",
         "network",
         "pulseaudio",
-        "custom/fcitx5",
         "clock"
     ],
 
     "tray": {
-        "spacing": 6,
+        "spacing": 2,
         "icon-size": 16
     },
 
@@ -40,15 +39,6 @@
             "4": [],
             "5": []
         }
-    },
-
-    "custom/fcitx5": {
-        "exec": "waybar-fcitx5",
-        "return-type": "json",
-        "interval": 1,
-        "signal": 1,
-        "on-click": "fcitx5-remote -t",
-        "tooltip": true
     },
 
     "hyprland/window": {
