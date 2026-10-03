@@ -14,6 +14,7 @@ require("hypr.autostart")
 
 -- App rules
 require("hypr.apps.steam")
+require("hypr.apps.pavucontrol")
 require("hypr.apps.jetbrains")
 require("hypr.apps.localsend")
 require("hypr.apps.telegram")

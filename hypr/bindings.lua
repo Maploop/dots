@@ -66,11 +66,10 @@ end
 hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd("pavucontrol"))
 
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("rofi -show drun"))
-hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("toggle-omarchy-shell"))
 hl.bind(mainMod .. " + ESCAPE ", hl.dsp.exec_cmd("swaylock"))
 hl.bind(mainMod .. " + PERIOD", hl.dsp.exec_cmd("rofimoji"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("nautilus"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wallpaper-selector"))
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("networkmanager_dmenu"))
-hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("foot"))
+hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("kitty"))
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -z -m region"))

@@ -36,7 +36,7 @@ hl.config({
 		hide_special_on_workspace_change = true,
 	},
 	decoration = {
-		rounding = 12,
+		rounding = 0,
 		rounding_power = 2,
 
 		blur = {
