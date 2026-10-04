@@ -23,11 +23,9 @@ hl.on("hyprland.start", function()
 	-- Slow app launch fix -- set systemd vars before starting session services.
 	hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1)")
 	hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+	hl.exec_cmd("powerprofilesctl set performance")
 
-	-- Omarchy session services worth keeping (these are not the Quickshell shell).
-	hl.exec_cmd("omarchy-powerprofiles-init")
-	hl.exec_cmd(launch("omarchy-hyprland-monitor-watch"))
-	hl.exec_cmd(launch("udiskie --automount --no-notify --no-tray"))
+	hl.exec_cmd(launch("udiskie --automount --no-tray"))
 
 	-- My desktop: bar, notification daemon, wallpaper, idle manager.
 	hl.exec_cmd(launch("waybar"))
@@ -50,9 +48,6 @@ hl.on("hyprland.start", function()
 	)
 
 	hl.exec_cmd(launch("hypridle"))
-
-	-- Run post-boot hooks after startup config has loaded.
-	hl.exec_cmd("sleep 2 && omarchy-hook post-boot")
 end)
 
 hl.bind("SUPER + CTRL + W", hl.dsp.exec_cmd("cycle-wallpaper " .. shell_quote(wallpaper_dir) .. " next"))

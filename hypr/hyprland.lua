@@ -1,10 +1,13 @@
 -- Learn how to configure Hyprland: https://wiki.hypr.land/Configuring/Start/
 
-dofile((os.getenv("OMARCHY_PATH") or "/usr/share/omarchy") .. "/default/hypr/bootstrap.lua")
+local home = os.getenv("HOME")
 
-package.loaded["default.hypr.autostart"] = true
-
--- require("default.hypr.omarchy")
+package.path = table.concat({
+	home .. "/.config/?.lua",
+	home .. "/.config/hypr/?.lua",
+	home .. "/.config/hypr/?/init.lua",
+	package.path,
+}, ";")
 
 require("hypr.monitors")
 require("hypr.input")
