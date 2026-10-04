@@ -1,0 +1,3 @@
+-- LazyVim and its plugins own the existing mappings, including Neo-tree.
+-- This file runs after the defaults on VeryLazy; add personal overrides here.
+-- Leader is Space, and local leader is backslash (set in init.lua).
