@@ -1,0 +1,6 @@
+for f in "$HOME"/.config/bash/fns/*; do source "$f"; done
+
+source "$HOME/.config/bash/aliases"
+source "$HOME/.config/bash/init"
+
+[[ $- == *i* ]] && bind -f "$HOME/.config/bash/inputrc"
