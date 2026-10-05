@@ -1,3 +1,4 @@
+eval "$(starship init zsh)"
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 autoload -Uz compinit
@@ -35,5 +36,10 @@ setopt HIST_REDUCE_BLANKS
 
 alias ls="eza --long --header --icons=always --group-directories-first"
 
-PROMPT='%F{red}%n%f%F{white}@%f%F{magenta}%m%f %F{blue}%~%f %F{blue}$%f '
+ZSH_THEME_GIT_PROMPT_PREFIX="%F{white}[%F{cyan}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%F{white}]%f "
+ZSH_THEME_GIT_PROMPT_DIRTY="%F{red}*%f"
+ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}✓%f"
+
 fastfetch
+
