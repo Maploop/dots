@@ -93,7 +93,7 @@ inputbar {
 prompt {
     background-color: transparent;
     text-color:       @accent;
-    font:             "Iosevka Nerd Font 20";
+    font:             "Adawaita Mono Nerd Font 20";
 }
 
 entry {
@@ -101,7 +101,7 @@ entry {
     text-color:       @fg0;
     placeholder:      "";
     placeholder-color: @fg2;
-    font:             "Iosevka Nerd Font 20";
+    font:             "Adawaita Mono Nerd Font 20";
     cursor:           text;
 }
 
@@ -215,5 +215,5 @@ message {
 textbox {
     background-color: transparent;
     text-color:       @fg2;
-    font:             "Iosevka Nerd Font 20";
+    font:             "Adawaita Mono Nerd Font 20";
 }

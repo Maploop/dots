@@ -50,7 +50,7 @@
     "clock": {
         "format": "{:%Y-%m-%d %H:%M:%S}",
         //"tooltip-format": "<tt>{calendar}</tt>",
-        "tooltip-format": "<tt><span font='Iosevka Nerd Font' size='18pt'><b>{calendar}</b></span></tt>",
+        "tooltip-format": "<tt><span font='Adawaita Nerd Font' size='18pt'><b>{calendar}</b></span></tt>",
         "calendar": {
             "mode": "month",
             "mode-mon-col": 3,

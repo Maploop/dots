@@ -97,7 +97,7 @@ prompt {
 
     text-color: @accent;
 
-    font: "Iosevka Nerd Font 20";
+    font: "Adawaita Mono Nerd Font 20";
 }
 
 entry {
@@ -108,7 +108,7 @@ entry {
     placeholder: "Search wallpapers...";
     placeholder-color: @fg2;
 
-    font: "Iosevka Nerd Font 20";
+    font: "Adawaita Mono Nerd Font 20";
 
     cursor: text;
 }
@@ -200,7 +200,7 @@ element-text {
     horizontal-align: 0.5;
     vertical-align: 0.5;
 
-    font: "Iosevka Nerd Font 10";
+    font: "Adawaita Mono Nerd Font 10";
 
     //ellipsize: end;
 }
