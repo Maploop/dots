@@ -8,7 +8,7 @@ hl.config({
 		gaps_out = 6,
 		border_size = 2,
 		col = {
-			active_border = colors.blue,
+			active_border = colors.fg,
 			inactive_border = colors.border,
 		},
 		resize_on_border = false,
@@ -40,7 +40,7 @@ hl.config({
 		rounding_power = 2,
 
 		blur = {
-			enabled = false,
+			enabled = true,
 			size = 3,
 			passes = 2,
 			contrast = 1.1,
@@ -100,14 +100,14 @@ hl.animation({ leaf = "windowsIn", enabled = true, speed = 4, bezier = "smooth",
 hl.animation({ leaf = "windowsOut", enabled = true, speed = 3, bezier = "quick", style = "popin 90%" })
 hl.animation({ leaf = "windowsMove", enabled = true, speed = 3, bezier = "quick" })
 
-hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "slidefade 20%" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "fade" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "smooth", style = "slidefadevert 5%" })
 
-hl.animation({ leaf = "layers", enabled = true, speed = 3, bezier = "quick", style = "fade" })
-hl.animation({ leaf = "layersIn", enabled = true, speed = 3, bezier = "quick", style = "popin 95%" })
-hl.animation({ leaf = "layersOut", enabled = true, speed = 3, bezier = "quick", style = "popin 95%" })
-hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 3, bezier = "linearish" })
-hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 3, bezier = "linearish" })
+-- hl.animation({ leaf = "layers", enabled = true, speed = 3, bezier = "quick", style = "fade" })
+-- hl.animation({ leaf = "layersIn", enabled = true, speed = 3, bezier = "quick", style = "popin 95%" })
+-- hl.animation({ leaf = "layersOut", enabled = true, speed = 3, bezier = "quick", style = "popin 95%" })
+-- hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 3, bezier = "linearish" })
+-- hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 3, bezier = "linearish" })
 
 hl.animation({ leaf = "fade", enabled = true, speed = 4, bezier = "smooth" })
 

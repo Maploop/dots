@@ -1,4 +1,6 @@
-eval "$(starship init zsh)"
+# eval "$(starship init zsh)"
+export ZSH="$HOME/.oh-my-zsh"
+source $ZSH/oh-my-zsh.sh
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 autoload -Uz compinit
@@ -41,5 +43,6 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%F{white}]%f "
 ZSH_THEME_GIT_PROMPT_DIRTY="%F{red}*%f"
 ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}✓%f"
 
+PROMPT='%F{red}%n%f%F{white}@%f%F{magenta}%m%f %F{blue}%~%f %F{blue}$%f $(git_prompt_info)'
 fastfetch
 
