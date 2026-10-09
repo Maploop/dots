@@ -353,6 +353,7 @@ BasePopup {
         objects: [root.micSource]
     }
     PopupCard {
+        opaque: true
         StatusRow {
             id: statusRow
         }

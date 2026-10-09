@@ -285,6 +285,7 @@ BasePopup {
         Quickshell.execDetached(cmd);
     }
     PopupCard {
+        opaque: true
         SearchField {
             id: search
             accentBorder: root.runMode

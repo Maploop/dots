@@ -6,6 +6,7 @@ Singleton {
     id: root
     property string barBg: "#99141415"
     property string bg: "#B3141415"
+    property string popupBg: "#141415"
     property string surface: "#B31c1c24"
     property string hoverBg: "#C0252530"
     property string activeBg: "#C0252530"
@@ -40,12 +41,12 @@ Singleton {
     property int toastWidth: 400
     property int osdWidth: 150
     property int osdBottomMargin: 32
-    property int barHeight: 20
+    property int barHeight: 34
     property int groupSpacing: 16
     property int tightSpacing: 8
     property int barIconPadding: 0
     property int listSpacing: 4
-    property int traySize: 14
+    property int traySize: 15
     property int titleMax: 420
     property int titleMargin: 10
     property int listVisible: 7

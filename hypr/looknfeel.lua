@@ -46,13 +46,6 @@ hl.config({
 			vibrancy = 0.0,
 		},
 
-		shadow = {
-			enabled = true,
-			range = 6,
-			render_power = 2,
-			color = "0xee000000",
-		},
-
 		-- Use theme default
 		active_opacity = 0.98,
 		inactive_opacity = 0.92,
@@ -87,14 +80,6 @@ hl.layer_rule({
 	match = { namespace = "qs-bar" },
 	blur = true,
 	ignore_alpha = 0.1,
-})
-
-hl.layer_rule({
-	name = "qs-notifications-glass",
-	match = { namespace = "qs-notifications" },
-	blur = true,
-	ignore_alpha = 0.1,
-	no_anim = true,
 })
 
 hl.layer_rule({
