@@ -9,6 +9,12 @@ package.path = table.concat({
 	package.path,
 }, ";")
 
+pcall(function()
+	local xdg = os.getenv("XDG_DATA_HOME")
+	local base = (xdg ~= nil and xdg ~= "") and xdg or ((os.getenv("HOME") or "") .. "/.local/share")
+	dofile(base .. "/quickshell/qs-monitors.lua")
+end)
+
 require("hypr.monitors")
 require("hypr.input")
 require("hypr.bindings")

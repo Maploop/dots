@@ -1,5 +1,10 @@
 local mainMod = "SUPER"
 
+local terminal = "foot"
+local fileManager = "nemo"
+local browser = "librewolf"
+local secondMod = "SUPER + SHIFT"
+
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 
 hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
@@ -65,11 +70,23 @@ end
 
 hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd("pavucontrol"))
 
-hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("rofi -show drun"))
+hl.bind(mainMod .. " + D", hl.dsp.global("qs:launcher"))
 hl.bind(mainMod .. " + ESCAPE ", hl.dsp.exec_cmd("swaylock"))
 hl.bind(mainMod .. " + PERIOD", hl.dsp.exec_cmd("rofimoji"))
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("nautilus"))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wallpaper-selector"))
-hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("networkmanager_dmenu"))
-hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("kitty"))
-hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -z -m region"))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + period", hl.dsp.global("qs:emoji"))
+hl.bind(mainMod .. " + comma", hl.dsp.global("qs-bar:settings"))
+
+hl.bind(mainMod .. " + A", hl.dsp.global("qs-bar:control"))
+hl.bind(mainMod .. " + C", hl.dsp.global("qs-bar:calendar"))
+
+hl.bind(secondMod .. " + Q", hl.dsp.global("qs-bar:power"))
+hl.bind(secondMod .. " + C", hl.dsp.global("qs:caffeine"))
+hl.bind(secondMod .. " + D", hl.dsp.global("qs:dnd"))
+hl.bind(mainMod .. " + CTRL + L", hl.dsp.global("qs:lock"), { locked = true })
+hl.bind(mainMod .. " + V", hl.dsp.global("qs:clipboard"))
+
+hl.bind("Print", hl.dsp.global("qs:screenshot-area"))
+hl.bind(mainMod .. " + Print", hl.dsp.global("qs:screenshot-full"))
+hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-window"))

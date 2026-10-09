@@ -36,31 +36,25 @@ hl.config({
 		hide_special_on_workspace_change = true,
 	},
 	decoration = {
-		rounding = 12,
+		rounding = 0,
 		rounding_power = 2,
 
 		blur = {
 			enabled = true,
-			size = 3,
+			size = 6,
 			passes = 2,
-			contrast = 1.1,
-			brightness = 1.1,
-			vibrancy = 0.2,
-			vibrancy_darkness = 0.2,
-			noise = 0.03,
-			ignore_opacity = true,
-			new_optimizations = true,
+			vibrancy = 0.0,
 		},
 
 		-- Use theme default
-		active_opacity = 0.96,
-		inactive_opacity = 0.90,
+		active_opacity = 0.98,
+		inactive_opacity = 0.92,
 		fullscreen_opacity = 1.0,
 	},
 	group = {
 		groupbar = {
 			font_size = 12,
-			font_family = "Iosevka Nerd Font",
+			font_family = "Adawaita Mono Nerd Font",
 			font_weight_active = "ultraheavy",
 			font_weight_inactive = "normal",
 			indicator_height = 1,
@@ -79,6 +73,38 @@ hl.config({
 			gradient_round_only_edges = false,
 		},
 	},
+})
+
+hl.layer_rule({
+	name = "qs-bar-glass",
+	match = { namespace = "qs-bar" },
+	blur = true,
+	ignore_alpha = 0.1,
+})
+
+hl.layer_rule({
+	name = "qs-notifications-glass",
+	match = { namespace = "qs-notifications" },
+	ignore_alpha = 0.1,
+	no_anim = true,
+})
+
+hl.layer_rule({
+	name = "qs-picker-order",
+	match = { namespace = "qs-screenshot-picker" },
+	order = 10,
+})
+
+hl.layer_rule({
+	name = "qs-notifications-order",
+	match = { namespace = "qs-notifications" },
+	order = 20,
+})
+
+hl.window_rule({
+	name = "float-transparency",
+	match = { float = true },
+	opacity = "0.85 override 0.85 override",
 })
 
 hl.curve("calm", {

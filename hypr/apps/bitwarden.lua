@@ -16,3 +16,15 @@ hl.window_rule({
 	no_screen_share = true,
 	tag = "+floating-window",
 })
+
+hl.window_rule({
+	match = {
+		class = "^librewolf$",
+		title = "^Extension: %(Bitwarden Password Manager%).*",
+	},
+	no_screen_share = true,
+	float = true,
+	center = true,
+	size = { 1000, 800 },
+	tag = "+floating-window",
+})

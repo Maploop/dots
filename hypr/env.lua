@@ -1,6 +1,8 @@
 -- Cursor size.
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
+hl.env("QS_ICON_THEME", "Adwaita")
 
 -- Force all apps to use Wayland.
 hl.env("GDK_BACKEND", "wayland,x11,*")
