@@ -46,6 +46,13 @@ hl.config({
 			vibrancy = 0.0,
 		},
 
+		shadow = {
+			enabled = true,
+			range = 6,
+			render_power = 2,
+			color = "0xee000000",
+		},
+
 		-- Use theme default
 		active_opacity = 0.98,
 		inactive_opacity = 0.92,
@@ -85,6 +92,7 @@ hl.layer_rule({
 hl.layer_rule({
 	name = "qs-notifications-glass",
 	match = { namespace = "qs-notifications" },
+	blur = true,
 	ignore_alpha = 0.1,
 	no_anim = true,
 })
@@ -115,19 +123,35 @@ hl.curve("calm", {
 	},
 })
 
+hl.curve("smoothOut", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
+
+hl.animation({ leaf = "global", enabled = true, speed = 8, bezier = "smoothOut" })
+hl.animation({ leaf = "border", enabled = true, speed = 8, bezier = "smoothOut" })
+hl.animation({ leaf = "windows", enabled = true, speed = 5.5, bezier = "smoothOut", style = "slide" })
+hl.animation({ leaf = "fade", enabled = false })
+hl.animation({ leaf = "layers", enabled = false })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smoothOut", style = "slidefade" })
+hl.animation({ leaf = "zoomFactor", enabled = true, speed = 6, bezier = "smoothOut" })
+
+hl.gesture({
+	fingers = 3,
+	direction = "horizontal",
+	action = "workspace",
+})
+
 hl.curve("smooth", { type = "bezier", points = { { 0.22, 1 }, { 0.1, 1.1 } } })
 hl.curve("quick", { type = "bezier", points = { { 0.15, 0.85 }, { 0.25, 1.0 } } })
 hl.curve("overshot", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.08 } } })
 hl.curve("linearish", { type = "bezier", points = { { 0.3, 0.0 }, { 0.7, 1.0 } } })
 hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
 
-hl.animation({ leaf = "windows", enabled = true, speed = 4, bezier = "smooth", style = "popin 95%" })
-hl.animation({ leaf = "windowsIn", enabled = true, speed = 4, bezier = "smooth", style = "popin 85%" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 3, bezier = "quick", style = "popin 90%" })
-hl.animation({ leaf = "windowsMove", enabled = true, speed = 3, bezier = "quick" })
+-- hl.animation({ leaf = "windows", enabled = true, speed = 4, bezier = "smooth", style = "popin 95%" })
+-- hl.animation({ leaf = "windowsIn", enabled = true, speed = 4, bezier = "smooth", style = "popin 85%" })
+-- hl.animation({ leaf = "windowsOut", enabled = true, speed = 3, bezier = "quick", style = "popin 90%" })
+-- hl.animation({ leaf = "windowsMove", enabled = true, speed = 3, bezier = "quick" })
 
-hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "fade" })
-hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "smooth", style = "slidefadevert 5%" })
+-- hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "fade" })
+-- hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "smooth", style = "slidefadevert 5%" })
 
 -- hl.animation({ leaf = "layers", enabled = true, speed = 3, bezier = "quick", style = "fade" })
 -- hl.animation({ leaf = "layersIn", enabled = true, speed = 3, bezier = "quick", style = "popin 95%" })
@@ -135,7 +159,7 @@ hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "s
 -- hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 3, bezier = "linearish" })
 -- hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 3, bezier = "linearish" })
 
-hl.animation({ leaf = "fade", enabled = true, speed = 4, bezier = "smooth" })
+-- hl.animation({ leaf = "fade", enabled = true, speed = 4, bezier = "smooth" })
 
 -- o.window({ tag = "default-opacity" }, { opacity = "0.98 0.96" })
 

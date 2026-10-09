@@ -71,7 +71,7 @@ end
 hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd("pavucontrol"))
 
 hl.bind(mainMod .. " + D", hl.dsp.global("qs:launcher"))
-hl.bind(mainMod .. " + ESCAPE ", hl.dsp.exec_cmd("swaylock"))
+hl.bind(mainMod .. " + ESCAPE ", hl.dsp.global("qs:lock", { locked = true }))
 hl.bind(mainMod .. " + PERIOD", hl.dsp.exec_cmd("rofimoji"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))

@@ -4,12 +4,11 @@ import Quickshell
 
 Singleton {
     id: root
-
-    property string barBg: "#D9141415"
-    property string bg: "#141415"
-    property string surface: "#1c1c24"
-    property string hoverBg: "#252530"
-    property string activeBg: "#252530"
+    property string barBg: "#99141415"
+    property string bg: "#B3141415"
+    property string surface: "#B31c1c24"
+    property string hoverBg: "#C0252530"
+    property string activeBg: "#C0252530"
     property string border: "#26CDCDCD"
     property string fg: "#cdcdcd"
     property string dim: "#878787"
@@ -19,7 +18,7 @@ Singleton {
     property string transparent: "transparent"
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
-    property string font: "JetBrainsMono Nerd Font Propo"
+    property string font: "Adawaita Mono Nerd Font"
 
     property int px10: 10
     property int px11: 11
