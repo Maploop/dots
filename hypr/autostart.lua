@@ -1,14 +1,8 @@
-local function launch(command)
-	return "uwsm-app -- " .. command
-end
-
 hl.on("hyprland.start", function()
 	-- Slow app launch fix -- set systemd vars before starting session services.
 	hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1)")
 	hl.exec_cmd("dbus-update-activation-environment --systemd --all")
 	hl.exec_cmd("powerprofilesctl set performance")
-
-	hl.exec_cmd(launch("udiskie --automount --no-tray"))
 
 	hl.exec_cmd("qs")
 	hl.exec_cmd("hypridle")
@@ -18,5 +12,5 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("systemctl --user start hyprpolkitagent")
 	hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
 	hl.exec_cmd("hyprctl setcursor Adawaita 24")
-	hl.exec_cmd(launch("hypridle"))
+	hl.exec_cmd("hypridle")
 end)

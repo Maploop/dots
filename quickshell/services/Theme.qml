@@ -29,18 +29,18 @@ Singleton {
     property int popupWidth: 340
     property int settingsWidth: 400
     property int launcherWidth: 480
-    property bool launcherShowIcons: false
-    property int barMargin: 6
+    property bool launcherShowIcons: true
+    property int barMargin: 3
     property int popupMargin: 6
     property int popupTopGap: 6
     property int popupPadding: 8
     property int popupSpacing: 8
     property int rowHeight: 36
     property int listRowHeight: 40
-    property int toastWidth: 300
+    property int toastWidth: 400
     property int osdWidth: 150
     property int osdBottomMargin: 32
-    property int barHeight: 34
+    property int barHeight: 20
     property int groupSpacing: 16
     property int tightSpacing: 8
     property int barIconPadding: 0
