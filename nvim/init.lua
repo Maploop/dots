@@ -1,4 +1,6 @@
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+vim.loader.enable()
 
-require("config.lazy")
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+require "core"

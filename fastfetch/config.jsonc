@@ -1,66 +1,53 @@
 {
-    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-    "logo": {
-    	"source": "arch_small", // replace with your specific distro or use 'fastfetch --list-logos' to find the exact logo you want
-        "type": "auto",
-        "height": 8,
-        "padding": {
-            "top": 0,
-            "left": 0,
-        }
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "logo": {
+    "type": "small",
+    "padding": {
+      "right": 2,
+      "top": 1
+    }
+  },
+  "display": {
+    "separator": " ",
+    "color": {
+      "keys": "cyan"
     },
-    "display": {
-        "separator": ""
+    "key": {
+      "type": "icon"
+    }
+  },
+  "modules": [
+    {
+      "type": "title"
     },
-    "modules": [
-        {
-            "key": "os      ",
-            "keyColor": "38;5;5",
-            "type": "os",
-            "format": "{name}"
-        },
-        {
-            "key": "kernel  ",
-            "keyColor": "38;5;5",
-            "type": "kernel",
-            "format": "{1}"
-        },
-        {
-            "key": "pkgs    ",
-            "keyColor": "38;5;5",
-            "type": "packages",
-            "format": "{10} (pacman)"
-        },
-        {
-            "key": "memory  ",
-            "keyColor": "38;5;5",
-            "type": "memory",
-            "format": "{1} ({3})"
-        },
-        {
-            "key": "system  ",
-            "keyColor": "38;5;5",
-            "type": "disk",
-            "folders": ["/"],
-            "format": "{1} ({3})"
-        },
-        {
-            "key": "storage ",
-            "keyColor": "38;5;5",
-            "type": "disk",
-            "folders": ["/mnt/Storage"],
-            "format": "{1} ({3})"
-        },
-        {
-            "key": "uptime  ",
-            "keyColor": "38;5;5",
-            "type": "uptime"
-        },
-        {
-            "type": "command",
-            "key": "age     ",
-            "keyColor": "35",
-            "text": "birth_install=$(stat -c %W /); current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days"
-        },
-    ]
+    {
+      "type": "os",
+      "format": "{pretty-name} {arch}"
+    },
+    {
+      "type": "uptime"
+    },
+    {
+      "type": "packages",
+      "combined": true
+    },
+    {
+      "type": "shell"
+    },
+    {
+      "type": "terminal"
+    },
+    {
+      "type": "memory"
+    },
+    {
+      "type": "disk",
+      "folders": "/"
+    },
+    {
+      "type": "colors",
+      "key": " ",
+      "symbol": "circle"
+    }
+  ]
 }

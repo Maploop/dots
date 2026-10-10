@@ -1,2 +1,0 @@
--- LazyVim supplies the editor autocmds. Add personal autocmds here.
--- Theme selection is entirely local; no desktop theme reload hooks are used.
