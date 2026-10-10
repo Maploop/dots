@@ -2,8 +2,7 @@
 My arch + Hyprland Dots
 
 # Screenshot
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/90bb4727-4284-4a76-8af3-467e60dabb41" />
-
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/aeac77a4-de46-44b9-9214-916948d8a0fe" />
 
 # Installation
 1. clone this repo
