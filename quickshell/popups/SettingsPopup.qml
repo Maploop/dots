@@ -602,6 +602,7 @@ BasePopup {
         return root.mainSelH + Services.Theme.popupSpacing + preview + root.monFullH + Services.Theme.popupSpacing + root.monFootH;
     }
     PopupCard {
+        glassBlur: Services.Theme.settingsGlassBlur
         Row {
             id: tabRow
             width: parent.width

@@ -41,6 +41,7 @@ BasePopup {
             Services.Power.refreshInhibitors();
     }
     PopupCard {
+        glassBlur: Services.Theme.powerGlassBlur
         Grid {
             id: powerGrid
             width: parent.width

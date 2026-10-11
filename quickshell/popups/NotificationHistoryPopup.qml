@@ -54,7 +54,7 @@ BasePopup {
         Rectangle {
             width: parent.width
             height: Services.Theme.rowHeight
-            color: Services.Theme.popupBg
+            color: Services.Theme.notificationGlassBlur ? Services.Theme.glassPopupBg : Services.Theme.popupBg
             Row {
                 anchors {
                     fill: parent
@@ -117,7 +117,7 @@ BasePopup {
                     readonly property string rawIcon: modelData.icon ?? ""
                     width: historyList.width
                     height: content.height + 16
-                    color: selected ? Services.Theme.activeBg : cardArea.containsMouse ? Services.Theme.hoverBg : Services.Theme.popupBg
+                    color: selected ? Services.Theme.activeBg : cardArea.containsMouse ? Services.Theme.hoverBg : (Services.Theme.notificationGlassBlur ? Services.Theme.glassPopupBg : Services.Theme.popupBg)
                     border.width: 1
                     border.color: modelData.critical ? Services.Theme.danger : Services.Theme.dim
                     MouseArea {

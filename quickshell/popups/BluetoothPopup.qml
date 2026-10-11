@@ -215,6 +215,7 @@ DeviceListBase {
         return "No devices found";
     }
     PopupCard {
+        glassBlur: Services.Theme.bluetoothGlassBlur
         DeviceHeader {
             statusText: root.headerStatus()
             statusColor: Services.Theme.dim

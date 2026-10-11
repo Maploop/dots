@@ -319,6 +319,7 @@ BasePopup {
         }
     }
     PopupCard {
+        glassBlur: Services.Theme.clipboardGlassBlur
         Text {
             id: title
             x: 10

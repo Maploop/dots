@@ -55,7 +55,8 @@ PanelWindow {
 
     implicitHeight: Services.Theme.barHeight
     exclusiveZone: implicitHeight
-    color: Services.Theme.barBg
+    color: Services.Theme.barGlassBlur ? Services.Theme.barBg : Services.Theme.barSolidBg
+    surfaceFormat.opaque: false
     Rectangle {
         anchors {
             left: parent.left

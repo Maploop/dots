@@ -93,6 +93,9 @@ PopupWindow {
     anchor.rect.y: base.anchorMode === "middle" ? (anchorScreenHeight > 0 ? Math.max(anchorBarHeight + Services.Theme.popupTopGap, anchorScreenHeight / 2 - height / 2) : anchorBarHeight + Services.Theme.popupTopGap) : anchorBarHeight + Services.Theme.popupTopGap + base.extraTop
     visible: false
     color: Services.Theme.transparent
+    // Popup surfaces must advertise their alpha channel so Hyprland can blur
+    // the desktop behind the translucent card.
+    surfaceFormat.opaque: false
     onVisibleChanged: {
         if (!base.visible) {
             grab.active = false;

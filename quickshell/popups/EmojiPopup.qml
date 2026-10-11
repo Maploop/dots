@@ -210,6 +210,7 @@ BasePopup {
         }
     }
     PopupCard {
+        glassBlur: Services.Theme.emojiGlassBlur
         SearchField {
             id: search
             placeholder: "/ to search"

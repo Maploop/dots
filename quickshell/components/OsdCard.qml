@@ -27,7 +27,7 @@ Rectangle {
     Component.onCompleted: card.refreshSig()
     width: Services.Theme.osdWidth
     height: 28
-    color: Services.Theme.bg
+    color: Services.Theme.osdGlassBlur ? Services.Theme.bg : Services.Theme.solidBg
     border.width: 1
     border.color: Services.Theme.dim
     readonly property var valueHint: {

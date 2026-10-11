@@ -286,6 +286,7 @@ BasePopup {
     }
     PopupCard {
         opaque: true
+        glassBlur: Services.Theme.launcherGlassBlur
         SearchField {
             id: search
             accentBorder: root.runMode

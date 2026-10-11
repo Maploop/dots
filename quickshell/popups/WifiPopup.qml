@@ -242,6 +242,7 @@ DeviceListBase {
         return net.security !== WifiSecurityType.Open && net.security !== WifiSecurityType.Unknown ? "Secured" : "Open";
     }
     PopupCard {
+        glassBlur: Services.Theme.wifiGlassBlur
         DeviceHeader {
             statusText: root.headerStatus()
             statusColor: Services.Wifi.connected ? Services.Theme.fg : Services.Theme.dim

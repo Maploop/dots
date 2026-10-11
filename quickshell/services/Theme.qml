@@ -7,6 +7,9 @@ Singleton {
     property string barBg: "#99141415"
     property string bg: "#B3141415"
     property string popupBg: "#141415"
+    property string barSolidBg: "#141415"
+    property string solidBg: "#141415"
+    property string glassPopupBg: "#B3141415"
     property string surface: "#B31c1c24"
     property string hoverBg: "#C0252530"
     property string activeBg: "#C0252530"
@@ -20,6 +23,19 @@ Singleton {
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
     property string font: "Adawaita Mono Nerd Font"
+
+    property bool barGlassBlur: true
+    property bool launcherGlassBlur: true
+    property bool clipboardGlassBlur: true
+    property bool controlCenterGlassBlur: true
+    property bool settingsGlassBlur: true
+    property bool calendarGlassBlur: true
+    property bool wifiGlassBlur: true
+    property bool bluetoothGlassBlur: true
+    property bool powerGlassBlur: true
+    property bool emojiGlassBlur: true
+    property bool notificationGlassBlur: true
+    property bool osdGlassBlur: true
 
     property int px10: 10
     property int px11: 11

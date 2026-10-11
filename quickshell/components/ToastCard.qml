@@ -28,7 +28,7 @@ Rectangle {
     Component.onCompleted: card.refreshSig()
     width: Services.Theme.popupWidth
     height: content.height + 16
-    color: Services.Theme.popupBg
+    color: Services.Theme.notificationGlassBlur ? Services.Theme.glassPopupBg : Services.Theme.popupBg
     border.width: 1
     border.color: {
         card.seq;

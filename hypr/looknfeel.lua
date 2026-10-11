@@ -36,7 +36,7 @@ hl.config({
 		hide_special_on_workspace_change = true,
 	},
 	decoration = {
-		rounding = 0,
+		rounding = 8,
 		rounding_power = 2,
 
 		blur = {
@@ -80,6 +80,7 @@ hl.layer_rule({
 	match = { namespace = "qs-bar" },
 	blur = true,
 	ignore_alpha = 0.1,
+	blur_popups = true,
 })
 
 hl.layer_rule({
@@ -92,6 +93,20 @@ hl.layer_rule({
 	name = "qs-notifications-order",
 	match = { namespace = "qs-notifications" },
 	order = 20,
+})
+
+hl.layer_rule({
+	name = "qs-notifications-glass",
+	match = { namespace = "qs-notifications" },
+	blur = true,
+	ignore_alpha = 0.1,
+})
+
+hl.layer_rule({
+	name = "qs-osd-glass",
+	match = { namespace = "qs-osd" },
+	blur = true,
+	ignore_alpha = 0.1,
 })
 
 hl.window_rule({

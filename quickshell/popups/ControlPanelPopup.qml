@@ -354,6 +354,7 @@ BasePopup {
     }
     PopupCard {
         opaque: true
+        glassBlur: Services.Theme.controlCenterGlassBlur
         StatusRow {
             id: statusRow
         }

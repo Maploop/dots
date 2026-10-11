@@ -39,6 +39,7 @@ Item {
         implicitHeight: toastWin.parkOffset + toastList.contentHeight
         visible: root.popupScreen !== null
         color: Services.Theme.transparent
+        surfaceFormat.opaque: false
         WlrLayershell.namespace: "qs-notifications"
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
@@ -74,6 +75,7 @@ Item {
         implicitHeight: osdList.contentHeight
         visible: osdList.count > 0 && root.osdScreen !== null
         color: Services.Theme.transparent
+        surfaceFormat.opaque: false
         WlrLayershell.namespace: "qs-osd"
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
