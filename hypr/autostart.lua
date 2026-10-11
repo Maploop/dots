@@ -1,4 +1,4 @@
-local cursor_theme = "macOS-hypr"
+local cursor_theme = "Adawaita"
 
 hl.env("HYPRCURSOR_THEME", cursor_theme)
 hl.env("XCURSOR_THEME", cursor_theme)

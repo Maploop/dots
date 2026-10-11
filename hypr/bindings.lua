@@ -1,7 +1,7 @@
 local mainMod = "SUPER"
 
 local terminal = "foot"
-local fileManager = "nemo"
+local fileManager = "nautilus"
 local browser = "librewolf"
 local secondMod = "SUPER + SHIFT"
 
