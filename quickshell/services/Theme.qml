@@ -4,15 +4,12 @@ import Quickshell
 
 Singleton {
     id: root
-    property string barBg: "#99141415"
-    property string bg: "#B3141415"
-    property string popupBg: "#141415"
-    property string barSolidBg: "#141415"
-    property string solidBg: "#141415"
-    property string glassPopupBg: "#B3141415"
-    property string surface: "#B31c1c24"
-    property string hoverBg: "#C0252530"
-    property string activeBg: "#C0252530"
+
+    property string barBg: "#D9141415"
+    property string bg: "#141415"
+    property string surface: "#1c1c24"
+    property string hoverBg: "#252530"
+    property string activeBg: "#252530"
     property string border: "#26CDCDCD"
     property string fg: "#cdcdcd"
     property string dim: "#878787"
@@ -22,20 +19,7 @@ Singleton {
     property string transparent: "transparent"
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
-    property string font: "Adawaita Mono Nerd Font"
-
-    property bool barGlassBlur: true
-    property bool launcherGlassBlur: true
-    property bool clipboardGlassBlur: true
-    property bool controlCenterGlassBlur: true
-    property bool settingsGlassBlur: true
-    property bool calendarGlassBlur: true
-    property bool wifiGlassBlur: true
-    property bool bluetoothGlassBlur: true
-    property bool powerGlassBlur: true
-    property bool emojiGlassBlur: true
-    property bool notificationGlassBlur: true
-    property bool osdGlassBlur: true
+    property string font: "JetBrainsMono Nerd Font Propo"
 
     property int px10: 10
     property int px11: 11
@@ -46,23 +30,24 @@ Singleton {
     property int popupWidth: 340
     property int settingsWidth: 400
     property int launcherWidth: 480
-    property bool launcherShowIcons: true
-    property int barMargin: 3
+    property bool launcherShowIcons: false
+    property int barMargin: 6
     property int popupMargin: 6
     property int popupTopGap: 6
     property int popupPadding: 8
     property int popupSpacing: 8
     property int rowHeight: 36
     property int listRowHeight: 40
-    property int toastWidth: 400
+    property int toastWidth: 300
     property int osdWidth: 150
     property int osdBottomMargin: 32
     property int barHeight: 34
+    property bool workspacesOnLeft: true
     property int groupSpacing: 16
     property int tightSpacing: 8
     property int barIconPadding: 0
     property int listSpacing: 4
-    property int traySize: 15
+    property int traySize: 14
     property int titleMax: 420
     property int titleMargin: 10
     property int listVisible: 7
@@ -75,7 +60,8 @@ Singleton {
     property int scanTimeout: 15000
     property int toastTimeout: 5000
     property int osdTimeout: 1500
-    property int toastStickyTimeout: 30000
+    property int lowToastTimeout: 3000
+    property int criticalToastTimeout: 30000
     property int toastMax: 5
     property int historyMax: 20
 

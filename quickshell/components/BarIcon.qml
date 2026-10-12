@@ -71,7 +71,7 @@ Item {
         implicitHeight: tipLabel.implicitHeight + 12
         Rectangle {
             anchors.fill: parent
-            color: Services.Theme.barGlassBlur ? Services.Theme.bg : Services.Theme.solidBg
+            color: Services.Theme.bg
             border.width: 1
             border.color: Services.Theme.border
             Text {

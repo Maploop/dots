@@ -9,6 +9,10 @@ BasePopup {
     implicitHeight: Math.min(16 + tabRow.height + Services.Theme.popupSpacing + root.contentHeight(), (Screen.height ?? 800) - 60)
     property int tab: 0
     function cancelOrClose(): void {
+        if (root.wallFocus) {
+            root.cancelWallFocus();
+            return;
+        }
         if (root.previewGrab) {
             root.cancelPreviewGrab(true);
             return;
@@ -38,7 +42,7 @@ BasePopup {
     Shortcut { sequence: "Enter"; enabled: root.visible; onActivated: root.activateSelected() }
 
     Connections {
-        target: Services.Settings
+        target: Services.Monitors
         function onLastApplyMsgChanged(): void {
             if (!root.preventClose)
                 return;
@@ -63,9 +67,31 @@ BasePopup {
     property string previewGrabName: ""
     property var previewBaseOrder: []
     property string previewBaseAxis: "row"
+    property bool wallFocus: false
+    property int wallCursor: 0
     function hoverSelect(i: int): void {
-        if (!root.anyDropOpen() && !root.previewGrab)
+        if (!root.anyDropOpen() && !root.previewGrab) {
+            if (root.wallFocus && !(root.tab === 0 && i === 0))
+                root.wallFocus = false;
             root.selectedIndex = i;
+        }
+    }
+    function ensureWallCursor(): void {
+        if (root.wpCount <= 0) {
+            root.wallCursor = 0;
+            return;
+        }
+        if (root.wallCursor >= 0 && root.wallCursor < root.wpCount)
+            return;
+        const cur = Services.Settings.wallpaperOverride ?? "";
+        const at = Services.Settings.wallpapers.indexOf(cur);
+        root.wallCursor = at >= 0 ? at : 0;
+    }
+    function cancelWallFocus(): bool {
+        if (!root.wallFocus)
+            return false;
+        root.wallFocus = false;
+        return true;
     }
     function cancelPreviewGrab(revert: bool): bool {
         if (!root.previewGrab)
@@ -94,17 +120,22 @@ BasePopup {
     onTabChanged: {
         root.selectedIndex = 0;
         root.closeDrop();
+        root.cancelWallFocus();
         root.cancelPreviewGrab(false);
         root.syncWallCursor();
         root.syncLastAsusRows();
         if (root.visible && root.tab === 2)
-            Services.Settings.refreshMonitors(false);
+            Services.Monitors.refreshMonitors(false);
         if (root.visible && root.tab === 1)
             Services.Asus.refresh();
     }
-    onWpCountChanged: root.syncWallCursor()
+    onWpCountChanged: {
+        if (root.wpCount === 0)
+            root.cancelWallFocus();
+        root.syncWallCursor();
+    }
     onMonCountChanged: {
-        if (root.openMonRes !== "" && Services.Settings.monitorLive(root.openMonRes) === null)
+        if (root.openMonRes !== "" && Services.Monitors.monitorLive(root.openMonRes) === null)
             root.closeDrop();
         root.clampSelection();
     }
@@ -118,16 +149,18 @@ BasePopup {
         if (visible) {
             root.selectedIndex = 0;
             root.closeDrop();
+            root.cancelWallFocus();
             root.syncWallCursor();
             root.syncLastAsusRows();
             displaysTab.syncPreviewOrder();
             Services.Settings.refreshWallpapers(false);
             if (root.tab === 2)
-                Services.Settings.refreshMonitors(false);
+                Services.Monitors.refreshMonitors(false);
             if (root.tab === 1)
                 Services.Asus.refresh();
         } else {
             root.calmBusy();
+            root.cancelWallFocus();
             root.cancelPreviewGrab(false);
             root.closeDrop();
         }
@@ -139,16 +172,16 @@ BasePopup {
     function toggleMonitorEnabled(name: string): void {
         if (name === "")
             return;
-        if (Services.Settings.monitorEnabled(name) && !Services.Settings.canDisableMonitor(name)) {
-            Services.Settings.setMonitorEnabled(name, false);
+        if (Services.Monitors.monitorEnabled(name) && !Services.Monitors.canDisableMonitor(name)) {
+            Services.Monitors.setMonitorEnabled(name, false);
             return;
         }
         root.beginMonitorChange();
-        Services.Settings.setMonitorEnabled(name, !Services.Settings.monitorEnabled(name));
+        Services.Monitors.setMonitorEnabled(name, !Services.Monitors.monitorEnabled(name));
     }
     function itemCount(): int {
         if (root.tab === 0)
-            return root.wpRows + root.inputRows;
+            return root.wpInputBase + root.inputRows;
         if (root.tab === 1)
             return 9 + root.asusRows;
         return root.monFirst + root.monCount * root.monRows + 1;
@@ -176,10 +209,11 @@ BasePopup {
         root.lastAsusRows = root.asusRows;
     }
     function syncWallCursor(): void {
+        root.ensureWallCursor();
         root.clampSelection();
-        if (root.tab === 0 && selectedIndex >= 0 && selectedIndex < root.wpCount) {
-            generalTab.wallList.currentIndex = selectedIndex;
-            generalTab.wallList.positionViewAtIndex(selectedIndex, GridView.Visible);
+        if (root.tab === 0 && root.wpCount > 0 && selectedIndex === 0) {
+            generalTab.wallList.currentIndex = root.wallCursor;
+            generalTab.wallList.positionViewAtIndex(root.wallCursor, GridView.Visible);
         } else {
             generalTab.wallList.currentIndex = -1;
         }
@@ -199,16 +233,21 @@ BasePopup {
             return;
         }
         if (root.tab === 2 && root.openMonRes !== "") {
-            root.moveCursor(Services.Settings.monitorModes(root.openMonRes), dir);
+            root.moveCursor(Services.Monitors.monitorModes(root.openMonRes), dir);
             return;
         }
-        if (root.tab === 0 && selectedIndex < root.wpRows) {
-            let nxt = selectedIndex + dir * root.wpCols;
-            if (nxt < 0)
-                nxt = 0;
-            else if (nxt >= root.wpRows)
-                nxt = root.wpRows;
-            selectedIndex = nxt;
+        if (root.tab === 0 && root.wpCount > 0) {
+            if (root.wallFocus && selectedIndex === 0) {
+                let nxt = root.wallCursor + dir * root.wpCols;
+                if (nxt < 0)
+                    nxt = 0;
+                else if (nxt >= root.wpCount)
+                    nxt = root.wpCount - 1;
+                root.wallCursor = nxt;
+                root.syncWallCursor();
+                return;
+            }
+            selectedIndex += dir;
             root.clampSelection();
             root.syncWallCursor();
             return;
@@ -219,7 +258,7 @@ BasePopup {
     }
     function sectionBounds(): var {
         if (root.tab === 0)
-            return root.wpRows > 0 ? [0, root.wpRows] : [0];
+            return root.wpCount > 0 ? [0, 1] : [0];
         if (root.tab === 1)
             return [0, 4, root.sysIdx(7)];
         const bounds = [0, 1];
@@ -229,6 +268,8 @@ BasePopup {
         return bounds;
     }
     function stepSection(dir: int): void {
+        if (root.wallFocus)
+            return;
         if (root.tab === 2 && root.previewGrab)
             return;
         if (root.anyDropOpen()) {
@@ -257,6 +298,7 @@ BasePopup {
         root.syncWallCursor();
     }
     function tabStep(dir: int): void {
+        root.cancelWallFocus();
         root.cancelPreviewGrab(false);
         root.closeDrop();
         const n = 3;
@@ -265,18 +307,19 @@ BasePopup {
     function monitorNameAt(i: int): string {
         if (i < root.monFirst || i >= root.monFirst + root.monCount * root.monRows)
             return "";
-        const m = Services.Settings.monitors[Math.floor((i - root.monFirst) / root.monRows)] ?? null;
+        const m = Services.Monitors.monitors[Math.floor((i - root.monFirst) / root.monRows)] ?? null;
         return m && typeof m.name === "string" ? m.name : "";
     }
     function adjustSelected(dir: int): void {
         if (root.tab === 0) {
-            if (selectedIndex < root.wpRows) {
-                selectedIndex += dir;
-                root.clampSelection();
-                root.syncWallCursor();
+            if (root.wpCount > 0 && selectedIndex === 0) {
+                if (root.wallFocus) {
+                    root.wallCursor = Services.Theme.clamp(root.wallCursor + dir, 0, root.wpCount - 1);
+                    root.syncWallCursor();
+                }
                 return;
             }
-            switch (selectedIndex - root.wpRows) {
+            switch (selectedIndex - root.wpInputBase) {
             case 0: Services.Settings.setSensitivity(Services.Settings.sensitivity + dir * 0.1); break;
             case 1: Services.Settings.setTouchScroll(Services.Settings.touchScroll + dir * 0.1); break;
             case 2: Services.Settings.setNaturalScroll(!Services.Settings.naturalScroll); break;
@@ -337,7 +380,7 @@ BasePopup {
             root.toggleMonitorEnabled(name);
         } else if (kind === 1) {
             root.beginMonitorChange();
-            Services.Settings.cycleValidScale(name, dir);
+            Services.Monitors.cycleValidScale(name, dir);
         } else if (kind === 2) {
             if (root.openMonRes === name) {
                 if (dir < 0)
@@ -346,18 +389,26 @@ BasePopup {
                     root.commitMonModeCursor();
             } else {
                 root.beginMonitorChange();
-                Services.Settings.cycleMonitorResolution(name, dir);
+                Services.Monitors.cycleMonitorResolution(name, dir);
             }
         }
         return;
     }
     function activateSelected(): void {
         if (root.tab === 0) {
-            if (selectedIndex >= 0 && selectedIndex < root.wpCount) {
-                const p = Services.Settings.wallpapers[selectedIndex] ?? "";
-                if (p !== "")
-                    Services.Settings.setWallpaper(p);
-            } else if (selectedIndex === root.wpRows + 2)
+            if (root.wpCount > 0 && selectedIndex === 0) {
+                if (!root.wallFocus) {
+                    root.ensureWallCursor();
+                    root.wallFocus = true;
+                    root.syncWallCursor();
+                } else {
+                    const p = Services.Settings.wallpapers[root.wallCursor] ?? "";
+                    if (p !== "")
+                        Services.Settings.setWallpaper(p);
+                    root.syncWallCursor();
+                }
+                return;
+            } else if (selectedIndex === root.wpInputBase + 2)
                 Services.Settings.setNaturalScroll(!Services.Settings.naturalScroll);
             return;
         }
@@ -388,7 +439,7 @@ BasePopup {
             return;
         }
         if (root.tab === 2 && root.selectedIndex === root.monLastIndex()) {
-            Services.Settings.refreshMonitors(true);
+            Services.Monitors.refreshMonitors(true);
             return;
         }
         const name = root.monitorNameAt(selectedIndex);
@@ -500,15 +551,15 @@ BasePopup {
             root.closeDrop();
             return;
         }
-        const opts = Services.Settings.monitorModes(name);
-        let at = opts.indexOf(Services.Settings.monitorRes(name));
+        const opts = Services.Monitors.monitorModes(name);
+        let at = opts.indexOf(Services.Monitors.monitorRes(name));
         if (at < 0)
             at = 0;
         root.dropCursor = at;
         root.openMenu = {kind: "res", name: name};
     }
     function mainOptions(): var {
-        return Services.Settings.mainMonitorOptions();
+        return Services.Monitors.mainMonitorOptions();
     }
     function toggleMainDrop(): void {
         if (root.enabledCount < 2)
@@ -518,7 +569,7 @@ BasePopup {
             return;
         }
         const opts = root.mainOptions();
-        let at = opts.indexOf(Services.Settings.mainMonitor);
+        let at = opts.indexOf(Services.Monitors.mainMonitor);
         if (at < 0)
             at = 0;
         root.dropCursor = at;
@@ -530,7 +581,7 @@ BasePopup {
         const opts = root.mainOptions();
         if (opts.length === 0)
             return;
-        Services.Settings.setMainMonitor(SettingsUtil.cycleOpt(opts, Services.Settings.mainMonitor, dir));
+        Services.Monitors.setMainMonitor(SettingsUtil.cycleOpt(opts, Services.Monitors.mainMonitor, dir));
     }
     function commitMainCursor(): void {
         const opts = root.mainOptions();
@@ -538,17 +589,17 @@ BasePopup {
             root.closeDrop();
             return;
         }
-        Services.Settings.setMainMonitor(opts[Services.Theme.clamp(root.dropCursor, 0, opts.length - 1)]);
+        Services.Monitors.setMainMonitor(opts[Services.Theme.clamp(root.dropCursor, 0, opts.length - 1)]);
         root.closeDrop();
     }
     function commitMonMode(name: string, mode: string): void {
         root.beginMonitorChange();
-        Services.Settings.setMonitorRes(name, mode);
+        Services.Monitors.setMonitorRes(name, mode);
         root.closeDrop();
     }
     function commitMonModeCursor(): void {
         const name = root.openMonRes;
-        const opts = Services.Settings.monitorModes(name);
+        const opts = Services.Monitors.monitorModes(name);
         if (name === "" || opts.length === 0) {
             root.closeDrop();
             return;
@@ -563,24 +614,26 @@ BasePopup {
     property int wpVisible: Math.min(root.wpCount, 9)
     property int wpRowsVisible: Math.ceil(root.wpVisible / root.wpCols)
     property int wpListH: root.wpRowsVisible * root.wpCellH + Math.max(0, root.wpRowsVisible - 1) * root.wpGap
-    property int wpRows: root.wpCount
+    property int wpInputBase: root.wpCount > 0 ? 1 : 0
+    property int wallHintH: 14
+    property int wallWrapPad: 6
     property int inputRows: 3
     property int sectionH: 18
-    property int enabledCount: Services.Settings.enabledMonitors().length
+    property int enabledCount: Services.Monitors.enabledMonitors().length
     property int monFirst: 2
     property int monRows: 3
     property int monCardPad: 8
     property int monHeaderH: 22
     property int monSubH: 16
     property int monBlockH: root.monHeaderH + root.monSubH + root.monRows * Services.Theme.rowHeight + (root.monRows + 1) * Services.Theme.listSpacing + 2 * root.monCardPad
-    property int monCount: Services.Settings.monitors.length
+    property int monCount: Services.Monitors.monitors.length
     property int monFootH: Services.Theme.rowHeight + Services.Theme.popupSpacing + 14
     property int monFullH: root.monCount * root.monBlockH + Math.max(0, root.monCount - 1) * Services.Theme.popupSpacing
     property int previewH: displaysTab.previewAreaH
     property int previewHintH: 14
 
     property int mainSelH: Services.Theme.rowHeight
-    property int wallColH: root.wpListH
+    property int wallColH: root.wpListH + (root.wpCount > 0 ? root.wallWrapPad * 2 : 0)
     property int inputColH: 3 * Services.Theme.rowHeight + 2 * Services.Theme.listSpacing
     property int sysIdleH: 4 * Services.Theme.rowHeight + 3 * Services.Theme.listSpacing
     property int sysBattH: (3 + root.asusRows) * Services.Theme.rowHeight + (2 + root.asusRows) * Services.Theme.listSpacing
@@ -591,7 +644,7 @@ BasePopup {
     }
     function contentHeight(): int {
         if (root.tab === 0)
-            return root.sectionH + Services.Theme.popupSpacing + root.wallColH + Services.Theme.popupSpacing + root.sectionH + Services.Theme.popupSpacing + root.inputColH;
+            return root.sectionH + Services.Theme.popupSpacing + root.wallColH + (root.wpCount > 0 ? Services.Theme.popupSpacing + root.wallHintH : 0) + Services.Theme.popupSpacing + root.sectionH + Services.Theme.popupSpacing + root.inputColH;
         if (root.tab === 1) {
             let h = root.sysIdleH + root.sysBattH + root.sysProfH + 3 * root.sectionH + 30 + 6 * Services.Theme.popupSpacing;
             return h;
@@ -602,7 +655,6 @@ BasePopup {
         return root.mainSelH + Services.Theme.popupSpacing + preview + root.monFullH + Services.Theme.popupSpacing + root.monFootH;
     }
     PopupCard {
-        glassBlur: Services.Theme.settingsGlassBlur
         Row {
             id: tabRow
             width: parent.width

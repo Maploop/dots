@@ -277,7 +277,7 @@ BasePopup {
             root.run(cmd);
             return;
         }
-        const term = Quickshell.env("TERMINAL") ?? "kitty";
+        const term = Quickshell.env("TERMINAL") ?? "foot";
         root.run([term].concat(cmd));
     }
     function run(cmd: var): void {
@@ -285,8 +285,6 @@ BasePopup {
         Quickshell.execDetached(cmd);
     }
     PopupCard {
-        opaque: true
-        glassBlur: Services.Theme.launcherGlassBlur
         SearchField {
             id: search
             accentBorder: root.runMode

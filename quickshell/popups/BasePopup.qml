@@ -9,6 +9,7 @@ PopupWindow {
     property int extraTop: 0
     property bool useGrab: true
     property bool preventClose: false
+    readonly property bool pickerActive: (bar?.screenshotTool?.pickerActive) === true
     property int busyMs: 1500
     function kickBusy(): void {
         base.preventClose = true;
@@ -29,10 +30,14 @@ PopupWindow {
             base.focusTarget.forceActiveFocus();
     }
     function regrab(): void {
+        if (base.pickerActive)
+            return;
         if (!grab.active && base.visible)
             grab.active = true;
     }
     function kickGrab(): void {
+        if (base.pickerActive)
+            return;
         if (base.visible && base.useGrab)
             grabTimer.restart();
     }
@@ -85,17 +90,21 @@ PopupWindow {
         onActivated: base.close()
     }
     anchor.window: bar
-    readonly property var anchorBar: base.anchor.window ?? bar
-    readonly property real anchorBarWidth: anchorBar && anchorBar.width ? anchorBar.width : (bar && bar.width ? bar.width : 0)
-    readonly property real anchorBarHeight: anchorBar && anchorBar.height ? anchorBar.height : (bar && bar.height ? bar.height : 0)
-    readonly property real anchorScreenHeight: anchorBar && anchorBar.screen && anchorBar.screen.height ? anchorBar.screen.height : (bar && bar.screen && bar.screen.height ? bar.screen.height : 0)
-    anchor.rect.x: base.anchorMode === "middle" ? anchorBarWidth / 2 - width / 2 : anchorBarWidth - width - Services.Theme.popupMargin
-    anchor.rect.y: base.anchorMode === "middle" ? (anchorScreenHeight > 0 ? Math.max(anchorBarHeight + Services.Theme.popupTopGap, anchorScreenHeight / 2 - height / 2) : anchorBarHeight + Services.Theme.popupTopGap) : anchorBarHeight + Services.Theme.popupTopGap + base.extraTop
+    readonly property var anchorWin: base.anchor.window ?? bar
+    readonly property real anchorWidth: anchorWin && anchorWin.width ? anchorWin.width : (bar && bar.width ? bar.width : 0)
+    readonly property real anchorScreenHeight: anchorWin && anchorWin.screen && anchorWin.screen.height ? anchorWin.screen.height : (bar && bar.screen && bar.screen.height ? bar.screen.height : 0)
+    readonly property string anchorScreenName: anchorWin && anchorWin.screen && anchorWin.screen.name ? anchorWin.screen.name : (bar && bar.screen && bar.screen.name ? bar.screen.name : "")
+    readonly property bool anchorFullscreen: Services.Bars.isFullscreen(base.anchorScreenName)
+    readonly property real rightTop: Services.Theme.popupTopGap + base.extraTop
+    readonly property real middleTop: anchorScreenHeight > 0 ? Math.max(Services.Theme.popupTopGap, anchorScreenHeight / 2 - height / 2 - (base.anchorFullscreen ? 0 : Services.Theme.barHeight)) : Services.Theme.popupTopGap
+    anchor.rect.x: base.anchorMode === "middle" ? anchorWidth / 2 - width / 2 : anchorWidth - width - Services.Theme.popupMargin
+    anchor.rect.y: base.anchorMode === "middle" ? base.middleTop : base.rightTop
     visible: false
     color: Services.Theme.transparent
-    // Popup surfaces must advertise their alpha channel so Hyprland can blur
-    // the desktop behind the translucent card.
-    surfaceFormat.opaque: false
+    onPickerActiveChanged: {
+        if (!base.pickerActive && base.visible && base.useGrab)
+            base.kickGrab();
+    }
     onVisibleChanged: {
         if (!base.visible) {
             grab.active = false;
@@ -122,6 +131,8 @@ PopupWindow {
         }
         onCleared: {
             if (!base.visible)
+                return;
+            if (base.pickerActive)
                 return;
             if (base.preventClose) {
                 base.regrab();
@@ -169,7 +180,7 @@ PopupWindow {
         id: busyKeep
         interval: 200
         repeat: true
-        running: base.preventClose && base.visible
+        running: base.preventClose && base.visible && !base.pickerActive
         onTriggered: base.regrab()
     }
     Timer {
@@ -178,13 +189,15 @@ PopupWindow {
         repeat: false
         onTriggered: {
             base.preventClose = false;
-            if (base.visible)
+            if (base.visible && !base.pickerActive)
                 base.regrab();
         }
     }
     Connections {
         target: Hyprland
         function onFocusedWorkspaceChanged(): void {
+            if (base.pickerActive)
+                return;
             if (base.visible && base.useGrab) {
                 grab.active = false;
                 base.kickGrab();
@@ -194,6 +207,8 @@ PopupWindow {
     Connections {
         target: base
         function onWindowConnected(): void {
+            if (base.pickerActive)
+                return;
             if (base.visible && base.useGrab)
                 base.kickGrab();
         }

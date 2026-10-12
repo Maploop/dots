@@ -1,37 +1,37 @@
 import QtQuick
 import Quickshell.Hyprland
 import "../services" as Services
-
 Row {
     id: root
     anchors {
-        left: parent.left
+        left: Services.Theme.workspacesOnLeft ? parent.left : undefined
         leftMargin: Services.Theme.barMargin
+        horizontalCenter: Services.Theme.workspacesOnLeft ? undefined : parent.horizontalCenter
         verticalCenter: parent.verticalCenter
     }
     spacing: Services.Theme.listSpacing
     required property string screenName
-
+    function isSpecialWorkspace(ws): bool {
+        return ws && (ws.id < 0 || ws.name === "special" || String(ws.name).startsWith("special:"));
+    }
     readonly property var pool: {
         const all = Hyprland.workspaces && Hyprland.workspaces.values ? Hyprland.workspaces.values : [];
         return all.filter(ws => {
-            if (!ws)
+            if (!ws || root.isSpecialWorkspace(ws))
                 return false;
             const m = ws.monitor;
             const name = (m && typeof m.name === "string" && m.name !== "") ? m.name : (typeof m === "string" ? m : "");
             return name === root.screenName;
         });
     }
-
     readonly property int activeId: {
         const mons = Hyprland.monitors && Hyprland.monitors.values ? Hyprland.monitors.values : [];
         for (const m of mons) {
-            if (m && m.name === root.screenName && m.activeWorkspace)
+            if (m && m.name === root.screenName && m.activeWorkspace && !root.isSpecialWorkspace(m.activeWorkspace))
                 return m.activeWorkspace.id ?? -99999;
         }
         return -99999;
     }
-
     readonly property var _slots: {
         const m = {};
         const ids = new Set();
@@ -45,15 +45,11 @@ Row {
             ids.add(root.activeId);
         return {ids: [...ids].sort((a, b) => a - b), byId: m};
     }
-
     readonly property var slotIds: root._slots.ids
-
     function workspaceById(id: int): var {
         return (root.wsById ?? {})[id] ?? null;
     }
-
     readonly property var wsById: root._slots.byId
-
     function activateSlot(id: int): void {
         const target = workspaceById(id);
         if (target && typeof target.activate === "function") {
@@ -65,7 +61,6 @@ Row {
         else
             Hyprland.dispatch("workspace " + String(id));
     }
-
     function stepSlot(dir: int): void {
         const ids = root.slotIds ?? [];
         if (ids.length === 0)
@@ -75,7 +70,6 @@ Row {
             i = dir > 0 ? -1 : 0;
         root.activateSlot(ids[(i + dir + ids.length) % ids.length]);
     }
-
     WheelHandler {
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
         onWheel: event => {
@@ -86,7 +80,6 @@ Row {
             event.accepted = true;
         }
     }
-
     Repeater {
         model: slotIds
         delegate: Item {
@@ -95,20 +88,14 @@ Row {
             readonly property bool isFocused: ws ? !!ws.active : modelData === root.activeId
             width: 22
             height: 25
-
             Text {
                 anchors.centerIn: parent
-                text: {
-                    const isSpecial = modelData < 0 || (ws && typeof ws.name === "string" && ws.name.startsWith("special:"));
-                    if (isSpecial) return "S";
-                    return (ws && ws.name) ? ws.name : String(modelData);
-                }
+                text: ws && ws.name ? ws.name : modelData
                 color: isFocused ? Services.Theme.white : Services.Theme.dim
                 font.family: Services.Theme.font
                 font.pixelSize: Services.Theme.px12
                 font.bold: isFocused
             }
-
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor

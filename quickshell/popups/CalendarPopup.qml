@@ -87,7 +87,6 @@ BasePopup {
         Qt.openUrlExternally(`https://calendar.google.com/calendar/u/0/r/day/${year}/${month}/${day}`);
     }
     PopupCard {
-        glassBlur: Services.Theme.calendarGlassBlur
         Row {
             width: parent.width
             height: 26

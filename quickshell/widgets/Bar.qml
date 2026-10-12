@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland
+import "../components"
 import "../services" as Services
 
 PanelWindow {
@@ -18,12 +19,12 @@ PanelWindow {
     }
 
     readonly property string focusedName: Hyprland.focusedMonitor?.name ?? ""
-    property var mainScreen: Services.Settings.mainScreen(Quickshell.screens)
+    property var mainScreen: Services.Monitors.mainScreen(Quickshell.screens)
     screen: bar.mainScreen ?? Quickshell.screens[0] ?? null
     readonly property string mainName: bar.mainScreen?.name ?? ""
 
     function currentPopupAnchor(): var {
-        return Services.Bars.barForScreen(bar.focusedName) ?? bar;
+        return Services.Bars.anchorForScreen(bar.focusedName) ?? bar;
     }
     function syncBarReg(): void {
         Services.Bars.syncBar(bar, bar.mainName);
@@ -55,17 +56,8 @@ PanelWindow {
 
     implicitHeight: Services.Theme.barHeight
     exclusiveZone: implicitHeight
-    color: Services.Theme.barGlassBlur ? Services.Theme.barBg : Services.Theme.barSolidBg
-    surfaceFormat.opaque: false
-    Rectangle {
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        height: 1
-        color: Services.Theme.border
-    }
+    color: Services.Theme.barBg
+    BarDivider {}
     WlrLayershell.namespace: "qs-bar"
 
     readonly property var historyPanel: popups.historyPanel
@@ -87,12 +79,25 @@ PanelWindow {
             sessionLock.locked = true;
     }
     function handlePowerKey(): void {
-        Services.Power.lock();
         bar.closePopups();
-        Quickshell.execDetached(["systemctl", "suspend", "-i"]);
+        bar.lockScreen();
+        Services.Power.lock();
+        if (Services.Power.hasLogind)
+            suspendDelay.restart();
+    }
+    Timer {
+        id: suspendDelay
+        interval: 600
+        repeat: false
+        onTriggered: Quickshell.execDetached(["systemctl", "suspend", "-i"])
     }
     function screenshot(mode: string): void {
-        screenshotTool.capture(mode);
+        const m = typeof mode === "string" ? mode : "";
+        if (m !== "area" && m !== "window" && m !== "full" && m !== "") {
+            console.warn("quickshell: rejecting invalid screenshot mode: " + m.slice(0, 32));
+            return;
+        }
+        screenshotTool.capture(m === "" ? "full" : m);
     }
     function unlocked(): bool {
         return !(bar.sessionLock && bar.sessionLock.locked === true);
@@ -111,7 +116,7 @@ PanelWindow {
     readonly property int screenCount: Quickshell.screens.length
     onScreenCountChanged: {
         bar.followPopupAnchor();
-        Services.Settings.refreshMonitors(true);
+        Services.Monitors.refreshMonitors(true);
     }
 
     DepCheck {}

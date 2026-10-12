@@ -27,7 +27,7 @@ Rectangle {
     Component.onCompleted: card.refreshSig()
     width: Services.Theme.osdWidth
     height: 28
-    color: Services.Theme.osdGlassBlur ? Services.Theme.bg : Services.Theme.solidBg
+    color: Services.Theme.bg
     border.width: 1
     border.color: Services.Theme.dim
     readonly property var valueHint: {
@@ -92,7 +92,7 @@ Rectangle {
     }
     Timer {
         id: expiryTimer
-        interval: card.notification.expireTimeout > 0 ? card.notification.expireTimeout : Services.Theme.toastTimeout
+        interval: card.notification.expireTimeout > 0 ? card.notification.expireTimeout : Services.Theme.osdTimeout
         running: !(card.notification.resident === true)
         repeat: false
         onTriggered: Services.Notifs.dismissToast(card.notification)

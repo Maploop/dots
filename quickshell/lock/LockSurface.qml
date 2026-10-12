@@ -9,7 +9,7 @@ Item {
     property var ownScreen: null
     property bool locked: true
     readonly property string ownName: ownScreen && ownScreen.name ? String(ownScreen.name) : ""
-    readonly property var mainScreen: Services.Settings.mainScreen(Quickshell.screens)
+    readonly property var mainScreen: Services.Monitors.mainScreen(Quickshell.screens)
     readonly property string mainName: mainScreen && mainScreen.name ? String(mainScreen.name) : ""
     readonly property bool isMain: ownName === "" || mainName === "" || ownName === mainName
     readonly property string focusedName: Hyprland.focusedMonitor?.name ?? ""
@@ -48,7 +48,7 @@ Item {
             width: 1
             height: 1
             opacity: 0
-            enabled: !root.context.unlockInProgress
+            enabled: !root.context.unlockInProgress && !root.context.faillockLocked
             echoMode: TextInput.Password
             onTextChanged: root.context.currentText = text
             onActiveFocusChanged: {
@@ -137,10 +137,6 @@ Item {
             anchors.centerIn: parent
             width: 360
             spacing: 20
-            transform: Translate {
-                id: shakeT
-                x: 0
-            }
             Column {
                 width: parent.width
                 spacing: 6
@@ -171,6 +167,10 @@ Item {
                 border.width: 1
                 border.color: root.context.showFailure ? Services.Theme.danger : Services.Theme.border
                 radius: 0
+                transform: Translate {
+                    id: shakeT
+                    x: 0
+                }
                 Column {
                     id: cardCol
                     anchors {
@@ -218,7 +218,7 @@ Item {
                             echoMode: TextInput.Password
                             font.family: Services.Theme.font
                             font.pixelSize: Services.Theme.px13
-                            enabled: root.isMain && !root.context.unlockInProgress
+                            enabled: root.isMain && !root.context.unlockInProgress && !root.context.faillockLocked
                             onTextChanged: root.context.currentText = text
                             onActiveFocusChanged: {
                                 if (!activeFocus && root.locked && root.claimsFocus && field.enabled && mainRoot.visible)
@@ -261,45 +261,58 @@ Item {
                         MouseArea {
                             id: unlockBtn
                             anchors.fill: parent
-                            enabled: root.context.currentText !== "" && !root.context.unlockInProgress
+                            enabled: root.context.currentText !== "" && !root.context.unlockInProgress && !root.context.faillockLocked
                             cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                             onClicked: root.context.tryUnlock()
                         }
                     }
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        visible: root.context.showFailure
-                        text: "Incorrect password, try again"
-                        color: Services.Theme.danger
-                        font.family: Services.Theme.font
-                        font.pixelSize: Services.Theme.px12
-                        wrapMode: Text.WordWrap
-                    }
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        visible: root.context.authMessage !== ""
-                        text: root.context.authMessage
-                        color: Services.Theme.warn
-                        font.family: Services.Theme.font
-                        font.pixelSize: Services.Theme.px12
-                        wrapMode: Text.WordWrap
-                    }
                 }
             }
-            Text {
-                width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                visible: root.ownName !== ""
-                text: root.ownName
-                color: Services.Theme.dim
-                opacity: 0.7
-                font.family: Services.Theme.font
-                font.pixelSize: Services.Theme.px11
+        }
+        Text {
+            anchors {
+                top: contentCol.bottom
+                topMargin: 10
+                horizontalCenter: parent.horizontalCenter
             }
+            width: 360
+            horizontalAlignment: Text.AlignHCenter
+            visible: root.context.statusText !== ""
+            text: root.context.statusText
+            color: root.context.statusKind === "danger" ? Services.Theme.danger : root.context.statusKind === "warn" ? Services.Theme.warn : Services.Theme.fg
+            font.family: Services.Theme.font
+            font.pixelSize: Services.Theme.px12
+            wrapMode: Text.WordWrap
         }
         readonly property var lockPlayer: Services.Media.activePlayer
+        Text {
+            anchors {
+                bottom: statusRow.top
+                bottomMargin: 12
+                horizontalCenter: parent.horizontalCenter
+            }
+            visible: Services.Notifs.unread > 0
+            horizontalAlignment: Text.AlignHCenter
+            textFormat: Text.RichText
+            text: {
+                const crit = Services.Notifs.criticalUnread;
+                const norm = Services.Notifs.unread - crit;
+                const bell = "";
+                const gap = "&nbsp;&nbsp;";
+                const label = bell + gap + norm + " Notification" + (norm === 1 ? "" : "s");
+                const seg = function (color, content) {
+                    return '<font color="' + color + '">' + content + "</font>";
+                };
+                if (norm > 0 && crit > 0)
+                    return seg(Services.Theme.fg, label + "&nbsp;&middot;&nbsp;") + seg(Services.Theme.danger, crit + " Critical");
+                if (crit > 0)
+                    return seg(Services.Theme.danger, bell + gap + crit + " Critical");
+                return seg(Services.Theme.fg, label);
+            }
+            opacity: 0.85
+            font.family: Services.Theme.font
+            font.pixelSize: Services.Theme.px12
+        }
         Row {
             id: statusRow
             anchors {

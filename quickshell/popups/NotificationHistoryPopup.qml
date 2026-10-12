@@ -26,8 +26,11 @@ BasePopup {
         historyList.positionViewAtIndex(i, ListView.Contain);
     }
     onVisibleChanged: {
-        if (visible)
+        Services.Notifs.historyVisible = visible;
+        if (visible) {
+            Services.Notifs.markRead();
             polishTimer.restart();
+        }
     }
     PanelNavKeys {
         host: root
@@ -54,7 +57,7 @@ BasePopup {
         Rectangle {
             width: parent.width
             height: Services.Theme.rowHeight
-            color: Services.Theme.notificationGlassBlur ? Services.Theme.glassPopupBg : Services.Theme.popupBg
+            color: Services.Theme.bg
             Row {
                 anchors {
                     fill: parent
@@ -117,9 +120,17 @@ BasePopup {
                     readonly property string rawIcon: modelData.icon ?? ""
                     width: historyList.width
                     height: content.height + 16
-                    color: selected ? Services.Theme.activeBg : cardArea.containsMouse ? Services.Theme.hoverBg : (Services.Theme.notificationGlassBlur ? Services.Theme.glassPopupBg : Services.Theme.popupBg)
-                    border.width: 1
-                    border.color: modelData.critical ? Services.Theme.danger : Services.Theme.dim
+                    color: selected ? Services.Theme.activeBg : cardArea.containsMouse ? Services.Theme.hoverBg : Services.Theme.bg
+                    Rectangle {
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        width: 1
+                        visible: modelData.critical
+                        color: Services.Theme.danger
+                    }
                     MouseArea {
                         id: cardArea
                         anchors.fill: parent
@@ -143,7 +154,7 @@ BasePopup {
                                 Services.Notifs.activateDefault(live);
                             } catch (_) {}
                             root.panel.actionIndex = -1;
-                            Services.Notifs.dismissHistoryAt(idx);
+                            Services.Notifs.dismissHistoryAfterAction(idx, live);
                             root.panel.clampSelection();
                             bar.closePopups();
                         }
@@ -184,7 +195,10 @@ BasePopup {
                                         anchors.verticalCenter: parent.verticalCenter
                                         width: 44
                                         horizontalAlignment: Text.AlignRight
-                                        text: modelData.time ? Qt.formatDateTime(modelData.time, "HH:mm") : ""
+                                        text: {
+                                            Services.Notifs.timeTick;
+                                            return Services.Notifs.timeAgo(modelData.time);
+                                        }
                                         color: Services.Theme.dim
                                         font.family: Services.Theme.font
                                         font.pixelSize: Services.Theme.px10
@@ -193,7 +207,7 @@ BasePopup {
                                 Text {
                                     width: parent.width
                                     visible: (modelData.body ?? "") !== ""
-                                    text: modelData.body ?? ""
+                                    text: Services.Notifs.richBody(modelData.body)
                                     color: Services.Theme.dim
                                     font.family: Services.Theme.font
                                     font.pixelSize: Services.Theme.px12
@@ -211,7 +225,7 @@ BasePopup {
                                             Services.Notifs.activateAction(modelData.live, action);
                                         } catch (_) {}
                                         root.panel.actionIndex = -1;
-                                        Services.Notifs.dismissHistoryAt(idx);
+                                        Services.Notifs.dismissHistoryAfterAction(idx, modelData.live);
                                         root.panel.clampSelection();
                                         bar.closePopups();
                                     }
