@@ -19,7 +19,7 @@ Singleton {
     property string transparent: "transparent"
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
-    property string font: "JetBrainsMono Nerd Font Propo"
+    property string font: "Jetbrains Mono Nerd Font"
 
     property int px10: 10
     property int px11: 11
@@ -30,7 +30,7 @@ Singleton {
     property int popupWidth: 340
     property int settingsWidth: 400
     property int launcherWidth: 480
-    property bool launcherShowIcons: false
+    property bool launcherShowIcons: true
     property int barMargin: 6
     property int popupMargin: 6
     property int popupTopGap: 6
@@ -41,7 +41,7 @@ Singleton {
     property int toastWidth: 300
     property int osdWidth: 150
     property int osdBottomMargin: 32
-    property int barHeight: 34
+    property int barHeight: 30
     property bool workspacesOnLeft: true
     property int groupSpacing: 16
     property int tightSpacing: 8
@@ -64,6 +64,8 @@ Singleton {
     property int criticalToastTimeout: 30000
     property int toastMax: 5
     property int historyMax: 20
+    property int toastBodyMaxLines: 3
+    property int historyBodyMaxLines: 4
 
     property real volumeMax: 1.5
     property real volumeStep: 0.02

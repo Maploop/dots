@@ -1,0 +1,31 @@
+format = "$username$hostname $directory$git_branch$git_status$character"
+
+[line_break]
+disabled = true
+
+[directory]
+style = "blue"
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+symbol = ""
+style = "green"
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+style = "bright-black"
+format = "[$all_status$ahead_behind]($style) "
+
+[character]
+success_symbol = "[\\$](blue)"
+error_symbol = "[\\$](red)"
+vimcmd_symbol = "[\\V](white)"
+
+[username]
+show_always = true
+format = "[$user](red)"
+
+[hostname]
+ssh_only = false
+format = "[@](white)[$hostname](purple)"
