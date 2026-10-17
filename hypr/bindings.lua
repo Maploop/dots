@@ -87,6 +87,8 @@ hl.bind(secondMod .. " + D", hl.dsp.global("qs:dnd"))
 hl.bind(mainMod .. " + CTRL + L", hl.dsp.global("qs:lock"), { locked = true })
 hl.bind(mainMod .. " + V", hl.dsp.global("qs:clipboard"))
 
+hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(browser))
+
 hl.bind("Print", hl.dsp.global("qs:screenshot-area"))
-hl.bind(mainMod .. " + Print", hl.dsp.global("qs:screenshot-full"))
+hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-full"))
 hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-window"))

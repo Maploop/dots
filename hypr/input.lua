@@ -15,12 +15,24 @@ hl.config({
 		repeat_rate = 40,
 		repeat_delay = 250,
 		numlock_by_default = true,
+
+		touchpad = {
+			natural_scroll = true,
+			disable_while_typing = true,
+			scroll_factor = 0.8,
+		},
 	},
 
 	misc = {
 		key_press_enables_dpms = true,
 		mouse_move_enables_dpms = true,
 	},
+})
+
+hl.gesture({
+	fingers = 3,
+	direction = "horizontal",
+	action = "workspace",
 })
 
 -- App-specific touchpad scroll speeds.

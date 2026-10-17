@@ -8,7 +8,7 @@ hl.config({
 		gaps_out = 6,
 		border_size = 2,
 		col = {
-			active_border = colors.fg,
+			active_border = colors.purple,
 			inactive_border = colors.border,
 		},
 		resize_on_border = false,
@@ -36,7 +36,7 @@ hl.config({
 		hide_special_on_workspace_change = true,
 	},
 	decoration = {
-		rounding = 8,
+		rounding = 0,
 		rounding_power = 2,
 
 		blur = {
@@ -44,6 +44,13 @@ hl.config({
 			size = 6,
 			passes = 2,
 			vibrancy = 0.0,
+		},
+
+		shadow = {
+			enabled = true,
+			range = 6,
+			render_power = 2,
+			color = "0xee000000",
 		},
 
 		-- Use theme default
@@ -54,7 +61,7 @@ hl.config({
 	group = {
 		groupbar = {
 			font_size = 12,
-			font_family = "Adawaita Mono Nerd Font",
+			font_family = "Jetbrains Mono Nerd Font",
 			font_weight_active = "ultraheavy",
 			font_weight_inactive = "normal",
 			indicator_height = 1,
@@ -124,12 +131,6 @@ hl.curve("calm", {
 })
 
 hl.curve("smoothOut", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
-
-hl.gesture({
-	fingers = 3,
-	direction = "horizontal",
-	action = "workspace",
-})
 
 hl.curve("smooth", { type = "bezier", points = { { 0.22, 1 }, { 0.1, 1.1 } } })
 hl.curve("quick", { type = "bezier", points = { { 0.15, 0.85 }, { 0.25, 1.0 } } })
