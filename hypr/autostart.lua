@@ -1,4 +1,4 @@
-local cursor_theme = "Adawaita"
+local cursor_theme = "macOS"
 
 hl.env("HYPRCURSOR_THEME", cursor_theme)
 hl.env("XCURSOR_THEME", cursor_theme)
@@ -20,5 +20,6 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
 	hl.exec_cmd("hyprctl setcursor " .. cursor_theme .. " 24")
 	hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme '" .. cursor_theme .. "''")
+	hl.exec_cmd('echo -e "[Icon Theme]\nInherits=' .. cursor_theme .. '" > ~/.icons/default/index.theme')
 	hl.exec_cmd("hypridle")
 end)
