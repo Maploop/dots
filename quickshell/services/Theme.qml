@@ -19,7 +19,7 @@ Singleton {
     property string transparent: "transparent"
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
-    property string font: "Iosevka Nerd Font"
+    property string font: "JetBrainsMono Nerd Font"
 
     property int px10: 10
     property int px11: 11
@@ -40,7 +40,7 @@ Singleton {
     property int listRowHeight: 40
     property int toastWidth: 400
     property int osdWidth: 150
-    property int osdBottomMargin: 32
+    property int osdBottomMargin: 20
     property int barHeight: 30
     property bool workspacesOnLeft: true
     property int groupSpacing: 16
