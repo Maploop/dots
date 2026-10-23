@@ -14,7 +14,7 @@ hl.window_rule({
 	},
 	center = true,
 	opaque = true,
-	size = { 1100, 700 },
+	size = { 1280, 720 },
 })
 
 hl.window_rule({
