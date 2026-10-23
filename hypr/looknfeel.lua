@@ -138,14 +138,13 @@ hl.curve("overshot", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.08 } 
 hl.curve("linearish", { type = "bezier", points = { { 0.3, 0.0 }, { 0.7, 1.0 } } })
 hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
 
-hl.animation({ leaf = "windows", enabled = true, speed = 3.5, bezier = "smoothOut", style = "slide" })
--- Alternate animation
--- hl.animation({ leaf = "windows", enabled = true, speed = 3.5, bezier = "smoothOut", style = "popin 95%" })
+hl.animation({ leaf = "windows", enabled = true, speed = 3.5, bezier = "smoothOut", style = "popin 95%" })
 
-hl.animation({ leaf = "workspaces", enabled = true, speed = 3.5, bezier = "smoothOut", style = "slide" })
-hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "smoothOut", style = "slidevert" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "slidefade 5%" })
+hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "smooth", style = "slidefadevert 5%" })
 
-hl.animation({ leaf = "fade", enabled = false })
-hl.animation({ leaf = "layers", enabled = false })
+hl.animation({ leaf = "layers", enabled = true, speed = 3, bezier = "quick", style = "fade" })
+hl.animation({ leaf = "layersIn", enabled = true, speed = 3, bezier = "quick", style = "fade" })
+hl.animation({ leaf = "layersOut", enabled = true, speed = 3, bezier = "quick", style = "popin 95%" })
 
-hl.animation({ leaf = "zoomFactor", enabled = true, speed = 6, bezier = "smoothOut" })
+hl.animation({ leaf = "fade", enabled = true, speed = 4, bezier = "smooth" })
