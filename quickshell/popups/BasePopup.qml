@@ -58,6 +58,9 @@ PopupWindow {
     function quitArmed(): bool {
         return true;
     }
+    function quitAction(): void {
+        base.close();
+    }
     function cancelOrClose(): void {
         base.close();
     }
@@ -87,7 +90,7 @@ PopupWindow {
     Shortcut {
         sequence: "q"
         enabled: base.visible && base.quitArmed()
-        onActivated: base.close()
+        onActivated: base.quitAction()
     }
     anchor.window: bar
     readonly property var anchorWin: base.anchor.window ?? bar
@@ -96,9 +99,11 @@ PopupWindow {
     readonly property string anchorScreenName: anchorWin && anchorWin.screen && anchorWin.screen.name ? anchorWin.screen.name : (bar && bar.screen && bar.screen.name ? bar.screen.name : "")
     readonly property bool anchorFullscreen: Services.Bars.isAnyFullscreen(base.anchorScreenName)
     readonly property real rightTop: Services.Theme.popupTopGap + base.extraTop
+    readonly property real bottomReserve: (base.anchorFullscreen ? 0 : Services.Theme.barHeight) + Services.Theme.popupMargin
+    readonly property real clampedRightTop: base.anchorScreenHeight > 0 ? Services.Theme.clamp(base.anchorScreenHeight - base.height - base.bottomReserve, Services.Theme.popupTopGap, base.rightTop) : base.rightTop
     readonly property real middleTop: anchorScreenHeight > 0 ? Math.max(Services.Theme.popupTopGap, anchorScreenHeight / 2 - height / 2 - (base.anchorFullscreen ? 0 : Services.Theme.barHeight)) : Services.Theme.popupTopGap
     anchor.rect.x: base.anchorMode === "middle" ? anchorWidth / 2 - width / 2 : anchorWidth - width - Services.Theme.popupMargin
-    anchor.rect.y: base.anchorMode === "middle" ? base.middleTop : base.rightTop
+    anchor.rect.y: base.anchorMode === "middle" ? base.middleTop : base.clampedRightTop
     visible: false
     color: Services.Theme.transparent
     onPickerActiveChanged: {

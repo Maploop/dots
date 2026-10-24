@@ -6,7 +6,7 @@ Singleton {
     id: root
 
     property string barBg: "#D9141415"
-    property string bg: "#D9141415"
+    property string bg: "#141415"
     property string surface: "#1c1c24"
     property string hoverBg: "#252530"
     property string activeBg: "#252530"
@@ -19,7 +19,7 @@ Singleton {
     property string transparent: "transparent"
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
-    property string font: "JetBrainsMono Nerd Font"
+    property string font: "JetBrainsMono Nerd Font Propo"
 
     property int px10: 10
     property int px11: 11
@@ -38,11 +38,12 @@ Singleton {
     property int popupSpacing: 8
     property int rowHeight: 36
     property int listRowHeight: 40
-    property int toastWidth: 400
+    property int toastWidth: 300
     property int osdWidth: 150
     property int osdBottomMargin: 20
-    property int barHeight: 30
+    property int barHeight: 34
     property bool workspacesOnLeft: true
+    property bool powerShowShortcuts: false
     property int groupSpacing: 16
     property int tightSpacing: 8
     property int barIconPadding: 0

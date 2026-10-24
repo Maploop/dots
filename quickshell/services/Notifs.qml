@@ -42,7 +42,7 @@ Singleton {
         if (!n || n.qsInternal !== true)
             return false;
         const k = n.qsSyncKey;
-        return k === "volume" || k === "brightness" || k === "mic" || k === "media" || k === "charger" || k === "caffeine" || k === "dnd";
+        return k === "volume" || k === "brightness" || k === "mic" || k === "media" || k === "charger" || k === "caffeine" || k === "dnd" || k === "headphones";
     }
     function bypassesDnd(n): bool {
         if (n?.qsInternal === true)
@@ -92,6 +92,11 @@ Singleton {
         notifs.hideToast(n);
         notifs.releaseHistoryLive(n);
         notifs.safeDismiss(n);
+    }
+    function expireToast(n): void {
+        if (!n || n.resident === true)
+            return;
+        notifs.dismissToast(n);
     }
     function consumeToast(n): void {
         if (!n)
@@ -204,7 +209,7 @@ Singleton {
         const now = Date.now();
         for (const t of [...notifs.toasts, ...notifs.pending]) {
             if (notifs.isExpired(t, now))
-                notifs.hideToast(t);
+                notifs.expireToast(t);
         }
     }
     function safeDismiss(n): void {
@@ -391,7 +396,7 @@ Singleton {
     function handleNotification(notification): void {
         const syncId = notifs.syncIdOf(notification);
         if (syncId !== undefined) {
-            for (const old of notifs.toasts) {
+            for (const old of [...notifs.toasts, ...notifs.pending]) {
                 if (notifs.syncIdOf(old) === syncId) {
                     notifs.hideToast(old);
                     notifs.safeDismiss(old);
@@ -427,7 +432,7 @@ Singleton {
     function notify(opts): void {
         const o = opts ?? {};
         if (o.syncId !== undefined && !(Modes.dndActive && !notifs.isOwnFeedback(o.app ?? ""))) {
-            const cur = notifs.toasts.find(t => t && t.qsInternal === true && t.qsSyncKey === o.syncId);
+            const cur = [...notifs.toasts, ...notifs.pending].find(t => t && t.qsInternal === true && t.qsSyncKey === o.syncId);
             if (cur) {
                 cur.appName = o.app ?? cur.appName;
                 cur.summary = o.summary ?? "";
