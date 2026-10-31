@@ -1,11 +1,15 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Wayland
 import "../services" as Services
 PopupWindow {
     id: base
     required property var bar
-    property string anchorMode: "right"
+    property real preferredWidth: Services.Theme.popupWidth
+    implicitWidth: Math.min(base.preferredWidth, base.availableWidth)
+    property string anchorMode: "middle"
+    property bool attachToBar: true
     property int extraTop: 0
     property bool useGrab: true
     property bool preventClose: false
@@ -100,26 +104,69 @@ PopupWindow {
     readonly property var anchorWin: base.anchor.window ?? bar
     readonly property real anchorWidth: anchorWin && anchorWin.width ? anchorWin.width : (bar && bar.width ? bar.width : 0)
     readonly property real anchorScreenHeight: anchorWin && anchorWin.screen && anchorWin.screen.height ? anchorWin.screen.height : (bar && bar.screen && bar.screen.height ? bar.screen.height : 0)
+    readonly property real availableWidth: Math.max(1, base.anchorWidth - 2 * Services.Theme.popupMargin)
+    readonly property real availableHeight: Math.max(1, base.anchorScreenHeight - (base.attachToBar ? base.attachedTop + Services.Theme.popupMargin : 2 * Services.Theme.popupMargin))
     readonly property string anchorScreenName: anchorWin && anchorWin.screen && anchorWin.screen.name ? anchorWin.screen.name : (bar && bar.screen && bar.screen.name ? bar.screen.name : "")
     readonly property bool anchorFullscreen: Services.Bars.isAnyFullscreen(base.anchorScreenName)
-    readonly property real rightTop: Services.Theme.popupTopGap + base.extraTop
-    readonly property real bottomReserve: (base.anchorFullscreen ? 0 : Services.Theme.barHeight) + Services.Theme.popupMargin
-    readonly property real clampedRightTop: base.anchorScreenHeight > 0 ? Services.Theme.clamp(base.anchorScreenHeight - base.height - base.bottomReserve, Services.Theme.popupTopGap, base.rightTop) : base.rightTop
-    readonly property real middleTop: anchorScreenHeight > 0 ? Math.max(Services.Theme.popupTopGap, anchorScreenHeight / 2 - height / 2 - (base.anchorFullscreen ? 0 : Services.Theme.barHeight)) : Services.Theme.popupTopGap
+    readonly property real attachedTop: (base.anchorFullscreen ? 0 : Services.Theme.barHeight) + Services.Theme.popupBarGap + base.extraTop
+    readonly property real centeredTop: Math.max(Services.Theme.popupMargin, (base.anchorScreenHeight - base.height) / 2)
     anchor.rect.x: base.anchorMode === "middle" ? anchorWidth / 2 - width / 2 : anchorWidth - width - Services.Theme.popupMargin
-    anchor.rect.y: base.anchorMode === "middle" ? base.middleTop : base.clampedRightTop
+    anchor.rect.y: base.attachToBar ? base.attachedTop : base.centeredTop
     visible: false
     color: Services.Theme.transparent
+    BackgroundEffect.blurRegion: Services.Theme.popupBlur ? popupBlurRegion : null
+    Region {
+        id: popupBlurRegion
+        item: popupBackground
+        radius: Services.Theme.popupRadius
+    }
+    Rectangle {
+        id: popupBackground
+        parent: base.contentItem
+        anchors.fill: parent
+        z: -1
+        radius: Services.Theme.popupRadius
+        color: Services.Theme.popupBg
+        border.color: Services.Theme.border
+    }
+    function startOpenTransition(): void {
+        if (base.visible)
+            openTransition.restart();
+    }
+    ParallelAnimation {
+        id: openTransition
+        NumberAnimation {
+            target: base.contentItem
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: Services.Theme.motionDuration
+            easing.type: Easing.OutCubic
+        }
+        NumberAnimation {
+            target: base.contentItem
+            property: "scale"
+            from: 0.985
+            to: 1
+            duration: Services.Theme.motionDuration
+            easing.type: Easing.OutCubic
+        }
+    }
     onPickerActiveChanged: {
         if (!base.pickerActive && base.visible && base.useGrab)
             base.kickGrab();
     }
     onVisibleChanged: {
         if (!base.visible) {
+            openTransition.stop();
             grab.active = false;
             grabTimer.stop();
             focusRetry.stop();
         } else {
+            base.contentItem.transformOrigin = base.attachToBar ? Item.Top : Item.Center;
+            base.contentItem.opacity = 0;
+            base.contentItem.scale = 0.985;
+            Qt.callLater(base.startOpenTransition);
             base.openedAt = Date.now();
             base.kickGrab();
             base.focusTargetNow();

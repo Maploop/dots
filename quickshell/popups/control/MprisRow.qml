@@ -7,7 +7,7 @@ Rectangle {
     visible: popup.mprisPlayer !== null
     width: parent.width
     height: visible ? Services.Theme.rowHeight : 0
-    color: popup.selectedKind() === "mpris" ? Services.Theme.activeBg : Services.Theme.surface
+    color: popup.selectedKind() === "mpris" ? Services.Theme.popupActiveBg : Services.Theme.popupSurface
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true

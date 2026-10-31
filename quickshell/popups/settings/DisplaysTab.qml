@@ -172,7 +172,7 @@ Column {
         height: popup.enabledCount > 1 ? root.previewAreaH : 0
         Rectangle {
             anchors.fill: parent
-            color: popup.tab === 2 && popup.selectedIndex === 1 ? Services.Theme.activeBg : Services.Theme.transparent
+            color: popup.tab === 2 && popup.selectedIndex === 1 ? Services.Theme.popupActiveBg : Services.Theme.transparent
             border.width: 1
             border.color: popup.tab === 2 && popup.selectedIndex === 1 ? Services.Theme.accent : Services.Theme.border
             MouseArea {
@@ -215,7 +215,7 @@ Column {
                             width: boxSlot.bw
                             height: root.previewBoxH
                             scale: boxSlot.grabbed ? 1.06 : 1
-                            color: boxSlot.isFocused || boxSlot.grabbed ? Services.Theme.activeBg : Services.Theme.surface
+                            color: boxSlot.isFocused || boxSlot.grabbed ? Services.Theme.popupActiveBg : Services.Theme.popupSurface
                             border.width: 1
                             border.color: boxSlot.grabbed ? Services.Theme.accent : boxSlot.isFocused ? Services.Theme.accent : Services.Theme.dim
                             Text {

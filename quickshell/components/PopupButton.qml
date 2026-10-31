@@ -11,7 +11,8 @@ Rectangle {
     width: (parent.width - (columns - 1) * Services.Theme.popupSpacing) / columns
     height: Services.Theme.rowHeight
     readonly property bool lit: root.accent || root.selected
-    color: root.lit ? Services.Theme.accent : hover.containsMouse ? Services.Theme.hoverBg : Services.Theme.surface
+    Behavior on color { ColorAnimation { duration: Services.Theme.hoverDuration } }
+    color: root.lit ? Services.Theme.accent : hover.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.popupSurface
     Text {
         anchors.centerIn: parent
         text: root.label

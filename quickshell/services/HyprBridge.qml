@@ -1,11 +1,33 @@
 pragma Singleton
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 
 Singleton {
     id: bridge
 
     property var pending: ({})
+
+    function syncPopupBlur(): void {
+        if (!Hyprland.usingLua)
+            return;
+        // PopupWindow children inherit blur_popups from their parent layer.
+        // A named rule is updated in place across shell and compositor reloads.
+        const enabled = Theme.popupBlur ? "true" : "false";
+        bridge.evalCode('hl.layer_rule({name = "qs-popup-glass", match = {namespace = "^qs-popup-anchor$"}, blur = ' + enabled + ', blur_popups = ' + enabled + ', ignore_alpha = 0.1})');
+    }
+    Connections {
+        target: Theme
+        function onPopupBlurChanged(): void { bridge.syncPopupBlur(); }
+    }
+    Connections {
+        target: Hyprland
+        function onUsingLuaChanged(): void { bridge.syncPopupBlur(); }
+        function onRawEvent(event): void {
+            if (event.name === "configreloaded")
+                bridge.syncPopupBlur();
+        }
+    }
 
     function hypr(key: string, value: string): void {
         bridge.queue(key, value);

@@ -13,6 +13,8 @@ import "screenshot"
 import "services" as Services
 
 ShellRoot {
+    Component.onCompleted: Services.HyprBridge.syncPopupBlur()
+
     Bar {
         id: bar
         lockContext: lockContext

@@ -2,81 +2,45 @@ import QtQuick
 import Quickshell
 import "../components"
 import "../services" as Services
-BasePopup {
+Item {
     id: root
     required property var controlPanel
-    useGrab: false
-    extraTop: controlPanel.height + Services.Theme.popupSpacing
-    implicitWidth: Services.Theme.popupWidth
-    readonly property int calendarFixedHeight: calendarCard.fixedHeight
-    readonly property int maxStackedHeight: Math.max(0, root.anchorScreenHeight - Services.Theme.popupTopGap - Services.Theme.popupMargin - (root.anchorFullscreen ? 0 : Services.Theme.barHeight))
-    readonly property int chromeHeight: controlPanel.height + Services.Theme.popupSpacing + root.calendarFixedHeight + (Services.Notifs.history.length > 0 ? Services.Theme.rowHeight + 2 * Services.Theme.popupSpacing : Services.Theme.popupSpacing)
-    readonly property int listCap: Math.max(64, root.maxStackedHeight - root.chromeHeight)
+    readonly property var bar: root.controlPanel.bar
+    width: parent.width
+    property bool calendarExpanded: false
+    readonly property int calendarFixedHeight: calendarToggle.height + (root.calendarExpanded ? Services.Theme.popupSpacing + calendarCard.fixedHeight : 0)
+    readonly property int maxStackedHeight: root.controlPanel.availableHeight
+    readonly property int chromeHeight: controlPanel.controlsHeight + Services.Theme.popupSpacing + root.calendarFixedHeight + (Services.Notifs.history.length > 0 ? Services.Theme.rowHeight + 2 * Services.Theme.popupSpacing : 0)
+    readonly property int listCap: Math.max(0, root.maxStackedHeight - root.chromeHeight)
     implicitHeight: (Services.Notifs.history.length > 0 ? Services.Theme.rowHeight + Services.Theme.popupSpacing + Math.min(root.listCap, historyList.contentHeight) : 0) + (Services.Notifs.history.length > 0 ? Services.Theme.popupSpacing : 0) + root.calendarFixedHeight
-    visible: controlPanel.visible && !root.hidden
-    property int lastPanelHeight: 0
-    property bool hidden: false
-    property bool reanchoring: false
+    visible: controlPanel.visible
     readonly property alias calendar: calendarCard
     required property var clock
-    function close(): void {
-        controlPanel.close();
-    }
-    function reanchor(window): void {
-        const currentHeight = root.controlPanel.height;
-        if (root.anchor.window === window && currentHeight === root.lastPanelHeight && root.visible)
-            return;
-
-        root.lastPanelHeight = currentHeight;
-        root.reanchoring = true;
-        root.hidden = true;
-        root.anchor.window = window;
-        root.hidden = false;
-        root.reanchoring = false;
-    }
-    Connections {
-        target: root.controlPanel
-        function onHeightChanged(): void {
-            if (root.visible)
-                reanchorTimer.restart();
-        }
-    }
-    Timer {
-        id: reanchorTimer
-        interval: 1
-        repeat: false
-        onTriggered: {
-            if (!root.visible)
-                return;
-            root.reanchor(root.anchor.window);
-            root.controlPanel.forceGrab();
-        }
-    }
-    function cancelOrClose(): void {
-        root.controlPanel.handleEscape();
-    }
-    function quitAction(): void {
-        root.controlPanel.handleEscape();
-    }
     function revealAt(i: int): void {
         historyList.positionViewAtIndex(i, ListView.Contain);
     }
-    onVisibleChanged: {
-        if (root.reanchoring)
+    function setCalendarExpanded(expanded: bool): void {
+        if (root.calendarExpanded === expanded)
             return;
+        root.calendarExpanded = expanded;
+        if (expanded)
+            calendarCard.resetToToday();
+        root.controlPanel.selectIndex(root.controlPanel.calendarToggleIdx());
+    }
+    function toggleCalendar(): void {
+        root.setCalendarExpanded(!root.calendarExpanded);
+    }
+    onVisibleChanged: {
         Services.Notifs.historyVisible = visible;
         if (visible) {
             Services.Notifs.markRead();
             calendarCard.resetToToday();
-            polishTimer.restart();
+            historyList.forceLayout();
+            historyList.positionViewAtBeginning();
+        } else {
+            root.calendarExpanded = false;
         }
     }
-    PanelNavKeys {
-        host: root
-        panel: root.controlPanel
-    }
-    Shortcut { sequence: "["; enabled: root.visible; onActivated: root.controlPanel.stepSection(-1) }
-    Shortcut { sequence: "]"; enabled: root.visible; onActivated: root.controlPanel.stepSection(1) }
     Shortcut { sequence: "t"; enabled: root.visible && root.controlPanel.selectedKind() === "calendar"; onActivated: calendarCard.resetToToday() }
     Shortcut { sequence: "Shift+H"; enabled: root.visible && root.controlPanel.selectedKind() === "calendar"; onActivated: calendarCard.stepMonth(-1) }
     Shortcut { sequence: "Shift+L"; enabled: root.visible && root.controlPanel.selectedKind() === "calendar"; onActivated: calendarCard.stepMonth(1) }
@@ -86,15 +50,6 @@ BasePopup {
     Shortcut { sequence: "Shift+Right"; enabled: root.visible && root.controlPanel.selectedKind() === "calendar"; onActivated: calendarCard.stepMonth(1) }
     Shortcut { sequence: "Shift+Up"; enabled: root.visible && root.controlPanel.selectedKind() === "calendar"; onActivated: calendarCard.stepMonth(-12) }
     Shortcut { sequence: "Shift+Down"; enabled: root.visible && root.controlPanel.selectedKind() === "calendar"; onActivated: calendarCard.stepMonth(12) }
-    Timer {
-        id: polishTimer
-        interval: Services.Theme.focusDelay
-        repeat: false
-        onTriggered: {
-            if (root.visible)
-                historyList.positionViewAtIndex(0, ListView.Beginning);
-        }
-    }
     Column {
         anchors {
             top: parent.top
@@ -106,7 +61,7 @@ BasePopup {
             width: parent.width
             height: Services.Theme.rowHeight
             visible: Services.Notifs.history.length > 0
-            color: Services.Theme.bg
+            color: Services.Theme.transparent
             Row {
                 anchors {
                     fill: parent
@@ -169,7 +124,7 @@ BasePopup {
                     readonly property string rawIcon: modelData.icon ?? ""
                     width: historyList.width
                     height: content.height + 16
-                    color: selected ? Services.Theme.activeBg : cardArea.containsMouse ? Services.Theme.hoverBg : Services.Theme.bg
+                    color: selected ? Services.Theme.popupActiveBg : cardArea.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.transparent
                     Rectangle {
                         anchors {
                             left: parent.left
@@ -287,8 +242,18 @@ BasePopup {
                 }
             }
         }
+        PopupButton {
+            id: calendarToggle
+            width: parent.width
+            label: root.calendarExpanded ? "▴  Hide calendar" : "▾  Show calendar"
+            selected: root.controlPanel.selectedKind() === "calendarToggle"
+            onHovered: root.controlPanel.selectIndex(root.controlPanel.calendarToggleIdx())
+            onClicked: root.toggleCalendar()
+        }
         CalendarCard {
             id: calendarCard
+            visible: root.calendarExpanded
+            height: root.calendarExpanded ? fixedHeight : 0
             clock: root.clock
             popup: root.controlPanel
             focused: root.controlPanel.selectedKind() === "calendar"

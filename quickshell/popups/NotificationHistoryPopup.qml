@@ -7,7 +7,7 @@ BasePopup {
     required property var panel
     useGrab: false
     extraTop: panel.height + Services.Theme.popupSpacing
-    implicitWidth: Services.Theme.popupWidth
+    preferredWidth: Services.Theme.popupWidth
     readonly property int listCap: Math.max(96, Math.round(Screen.height / 2) - 32 - 8)
     implicitHeight: Services.Theme.rowHeight + (Services.Notifs.history.length > 0 ? Services.Theme.popupSpacing + Math.min(root.listCap, historyList.contentHeight) : 0)
     visible: panel.visible && Services.Notifs.history.length > 0
@@ -57,7 +57,7 @@ BasePopup {
         Rectangle {
             width: parent.width
             height: Services.Theme.rowHeight
-            color: Services.Theme.bg
+            color: Services.Theme.transparent
             Row {
                 anchors {
                     fill: parent
@@ -120,7 +120,7 @@ BasePopup {
                     readonly property string rawIcon: modelData.icon ?? ""
                     width: historyList.width
                     height: content.height + 16
-                    color: selected ? Services.Theme.activeBg : cardArea.containsMouse ? Services.Theme.hoverBg : Services.Theme.bg
+                    color: selected ? Services.Theme.popupActiveBg : cardArea.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.transparent
                     Rectangle {
                         anchors {
                             left: parent.left

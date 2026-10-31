@@ -12,7 +12,8 @@ Rectangle {
     readonly property bool isHovered: rowArea.containsMouse
     width: ListView.view.width
     height: root.rowHeight
-    color: root.selected ? Services.Theme.accent : rowArea.containsMouse ? Services.Theme.hoverBg : (root.highlighted ? Services.Theme.activeBg : root.baseColor)
+    Behavior on color { ColorAnimation { duration: Services.Theme.hoverDuration } }
+    color: root.selected ? Services.Theme.accent : rowArea.containsMouse ? Services.Theme.popupHoverBg : (root.highlighted ? Services.Theme.popupActiveBg : root.baseColor)
     MouseArea {
         id: rowArea
         anchors.fill: parent

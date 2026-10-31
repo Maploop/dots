@@ -4,7 +4,7 @@ import "../components"
 import "../services" as Services
 BasePopup {
     id: root
-    implicitWidth: Services.Theme.popupWidth
+    preferredWidth: Services.Theme.popupWidth
     implicitHeight: 16 + powerGrid.height
     Shortcut { sequence: "s"; enabled: root.visible; onActivated: root.powerOff() }
     Shortcut { sequence: "r"; enabled: root.visible; onActivated: root.reboot() }

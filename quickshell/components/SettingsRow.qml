@@ -10,7 +10,8 @@ Rectangle {
     signal hovered
     width: parent.width
     height: Services.Theme.rowHeight
-    color: root.selected ? Services.Theme.activeBg : Services.Theme.surface
+    Behavior on color { ColorAnimation { duration: Services.Theme.hoverDuration } }
+    color: root.selected ? Services.Theme.popupActiveBg : Services.Theme.popupSurface
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true

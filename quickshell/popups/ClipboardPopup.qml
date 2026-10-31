@@ -8,7 +8,7 @@ import "../services" as Services
 BasePopup {
     id: root
     anchorMode: "middle"
-    implicitWidth: Services.Theme.settingsWidth
+    preferredWidth: Services.Theme.settingsWidth
     implicitHeight: 16 + title.implicitHeight + Services.Theme.rowHeight + Services.Theme.popupSpacing * 3 + Services.Theme.listHeight(Services.Theme.listVisible) + hint.implicitHeight
     function cancelOrClose(): void {
         if (root.wipeConfirm) {
@@ -455,7 +455,7 @@ BasePopup {
         Rectangle {
             width: parent.width
             height: Services.Theme.rowHeight
-            color: Services.Theme.surface
+            color: Services.Theme.popupSurface
             Text {
                 anchors.centerIn: parent
                 visible: !root.wipeConfirm

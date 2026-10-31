@@ -8,7 +8,7 @@ Item {
     required property var bar
     required property var clock
 
-    readonly property alias bodyPanel: bodyPanel
+    readonly property var bodyPanel: controlPanelPopup.body
     readonly property alias controlPanel: controlPanelPopup
 
     property bool settingsRequested: false
@@ -60,16 +60,16 @@ Item {
     readonly property var clipboardPopup: clipboardLoader.item
     readonly property var emojiPopup: emojiLoader.item
 
-    readonly property var allPopups: [controlPanelPopup, wifiPopup, bluetoothPopup, powerPopup, root.settingsPopup, root.launcherPopup, root.clipboardPopup, root.emojiPopup, bodyPanel]
+    readonly property var allPopups: root.exclusivePopups
     readonly property var exclusivePopups: [controlPanelPopup, wifiPopup, bluetoothPopup, powerPopup, root.settingsPopup, root.launcherPopup, root.clipboardPopup, root.emojiPopup]
-    readonly property var rightPopups: [controlPanelPopup, wifiPopup, bluetoothPopup, powerPopup, root.settingsPopup, bodyPanel]
+    readonly property var rightPopups: root.allPopups.filter(p => p && p.anchorMode === "right")
 
     property int rightPopupBottom: {
-        const top = Services.Theme.popupTopGap;
         let bottom = 0;
         for (const p of root.rightPopups) {
+            // Notification offsets are measured from the bottom of the bar.
             if (p && p.visible && p.height > 0)
-                bottom = Math.max(bottom, top + (p.extraTop ?? 0) + p.height);
+                bottom = Math.max(bottom, p.anchor.rect.y + p.height - (p.anchorFullscreen ? 0 : Services.Theme.barHeight));
         }
         return bottom;
     }
@@ -174,8 +174,6 @@ Item {
                 target.anchor.window = returnTo.anchor.window;
             else
                 target.anchor.window = root.bar.currentPopupAnchor();
-            if (target === controlPanelPopup && bodyPanel && bodyPanel.anchor)
-                bodyPanel.anchor.window = target.anchor.window;
         }
         target.returnTo = open ? returnTo : null;
         target.visible = open;
@@ -187,10 +185,6 @@ Item {
         for (const p of root.allPopups) {
             if (!p || !p.anchor || p.anchor.window === anchor)
                 continue;
-            if (p === bodyPanel) {
-                p.reanchor(anchor);
-                continue;
-            }
             if (!p.visible) {
                 p.anchor.window = anchor;
                 continue;
@@ -207,18 +201,12 @@ Item {
         }
     }
     function revealHistory(i: int): void {
-        bodyPanel.revealAt(i);
+        root.bodyPanel.revealAt(i);
     }
 
     ControlPanelPopup {
         id: controlPanelPopup
         bar: root.bar
-        body: bodyPanel
-    }
-    ControlBodyPopup {
-        id: bodyPanel
-        bar: root.bar
-        controlPanel: controlPanelPopup
         clock: root.clock
     }
     WifiPopup {

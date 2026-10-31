@@ -30,8 +30,9 @@ Rectangle {
 
     visible: entryCount > 0
     width: parent.width
-    color: popup.selectedKind() === "tray" ? Services.Theme.activeBg : Services.Theme.surface
-    height: visible && popup.visible ? (expanded ? Math.max(Services.Theme.rowHeight, shellCol.implicitHeight) : Services.Theme.rowHeight) : 0
+    color: popup.selectedKind() === "tray" ? Services.Theme.popupActiveBg : Services.Theme.popupSurface
+    // Keep the panel's layout ready while its window is closed.
+    height: visible ? (expanded ? Math.max(Services.Theme.rowHeight, shellCol.implicitHeight) : Services.Theme.rowHeight) : 0
     clip: true
 
     Connections {

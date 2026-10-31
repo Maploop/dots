@@ -17,6 +17,17 @@ Singleton {
     property string accentFg: "#141415"
     property string white: "#ffffff"
     property string transparent: "transparent"
+    property real popupOpacity: 0.85
+    property bool popupBlur: true
+    readonly property color popupBg: root.withAlpha(root.bg, root.popupOpacity)
+    readonly property color popupSurface: root.withAlpha(root.surface, 0.26)
+    readonly property color popupHoverBg: root.withAlpha(root.hoverBg, 0.5)
+    readonly property color popupActiveBg: root.withAlpha(root.activeBg, 0.6)
+    property int popupRadius: 0
+    property int controlRadius: 0
+    property int indicatorRadius: 0
+    property int motionDuration: 160
+    property int hoverDuration: 100
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
     property string font: "Iosevka Nerd Font Propo"
@@ -28,12 +39,16 @@ Singleton {
     property int px14: 14
 
     property int popupWidth: 340
+    property int controlCenterWidth: 400
     property int settingsWidth: 400
+    property int wallpaperSelectorWidth: 760
     property int launcherWidth: 480
-    property bool launcherShowIcons: false
+    property bool launcherAttachedToBar: false
+    property bool launcherShowIcons: true
     property int barMargin: 6
     property int popupMargin: 6
     property int popupTopGap: 6
+    property int popupBarGap: 0
     property int popupPadding: 8
     property int popupSpacing: 8
     property int rowHeight: 36
@@ -77,6 +92,9 @@ Singleton {
     property real sigMed: 0.5
     property real sigLow: 0.25
 
+    function withAlpha(value: color, alpha: real): color {
+        return Qt.rgba(value.r, value.g, value.b, alpha);
+    }
     function clamp(x, a, b): real {
         return Math.max(a, Math.min(b, x));
     }

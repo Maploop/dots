@@ -16,7 +16,7 @@ Rectangle {
 
     width: parent.width
     height: Services.Theme.rowHeight
-    color: popup.selectedIndex === root.rowIndex ? Services.Theme.activeBg : Services.Theme.surface
+    color: popup.selectedIndex === root.rowIndex ? Services.Theme.popupActiveBg : Services.Theme.popupSurface
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true

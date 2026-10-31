@@ -5,8 +5,9 @@ import "../services/SettingsUtil.js" as SettingsUtil
 import "settings"
 BasePopup {
     id: root
-    implicitWidth: Services.Theme.settingsWidth
-    implicitHeight: Math.min(16 + tabRow.height + Services.Theme.popupSpacing + root.contentHeight(), (Screen.height ?? 800) - 60)
+    anchorMode: "right"
+    preferredWidth: root.tab === 0 ? Services.Theme.wallpaperSelectorWidth : Math.max(520, Services.Theme.settingsWidth)
+    implicitHeight: Math.min(2 * Services.Theme.popupPadding + tabRow.height + Services.Theme.popupSpacing + tabContents.implicitHeight, root.availableHeight)
     property int tab: 0
     function cancelOrClose(): void {
         if (root.wallFocus) {
@@ -58,6 +59,7 @@ BasePopup {
     }
 
     property int selectedIndex: 0
+    onSelectedIndexChanged: Qt.callLater(root.revealSelectedRow)
     property var openMenu: null
     readonly property int openDropdown: root.openMenu && root.openMenu.kind === "sys" ? root.openMenu.index : -1
     readonly property string openMonRes: root.openMenu && root.openMenu.kind === "res" ? root.openMenu.name : ""
@@ -118,6 +120,7 @@ BasePopup {
         return kicked;
     }
     onTabChanged: {
+        settingsScroll.contentY = 0;
         root.selectedIndex = 0;
         root.closeDrop();
         root.cancelWallFocus();
@@ -147,6 +150,7 @@ BasePopup {
 
     onVisibleChanged: {
         if (visible) {
+            settingsScroll.contentY = 0;
             root.selectedIndex = 0;
             root.closeDrop();
             root.cancelWallFocus();
@@ -217,6 +221,38 @@ BasePopup {
         } else {
             generalTab.wallList.currentIndex = -1;
         }
+        Qt.callLater(root.revealSelectedRow);
+    }
+    function selectedRow(item): var {
+        if (!item || !item.visible)
+            return null;
+        if (item.selected === true)
+            return item;
+        for (const child of item.children ?? []) {
+            const row = root.selectedRow(child);
+            if (row)
+                return row;
+        }
+        return null;
+    }
+    function revealSelectedRow(): void {
+        if (!root.visible)
+            return;
+        if (root.tab === 0 && root.selectedIndex === 0) {
+            settingsScroll.contentY = 0;
+            return;
+        }
+        const row = root.selectedRow(tabContents);
+        if (!row)
+            return;
+        const top = row.mapToItem(tabContents, 0, 0).y;
+        const bottom = top + row.height;
+        let y = settingsScroll.contentY;
+        if (top < y)
+            y = top;
+        else if (bottom > y + settingsScroll.height)
+            y = bottom - settingsScroll.height;
+        settingsScroll.contentY = Services.Theme.clamp(y, 0, Math.max(0, settingsScroll.contentHeight - settingsScroll.height));
     }
     function stepSelection(dir: int): void {
         if (root.tab === 2 && root.previewGrab) {
@@ -607,16 +643,16 @@ BasePopup {
         root.commitMonMode(name, opts[Services.Theme.clamp(root.dropCursor, 0, opts.length - 1)]);
     }
 
-    property int wpCols: 3
-    property int wpCellH: 102
-    property int wpGap: 4
+    readonly property int wpCols: root.width >= 680 ? 3 : root.width >= 400 ? 2 : 1
+    readonly property int wpCellH: Math.round((root.width - 2 * Services.Theme.popupPadding - 2 * root.wallWrapPad) / root.wpCols * 9 / 16) + 40
+    property int wpGap: 10
     property int wpCount: Services.Settings.wallpapers.length
-    property int wpVisible: Math.min(root.wpCount, 9)
+    property int wpVisible: Math.min(root.wpCount, root.wpCols * 2)
     property int wpRowsVisible: Math.ceil(root.wpVisible / root.wpCols)
-    property int wpListH: root.wpRowsVisible * root.wpCellH + Math.max(0, root.wpRowsVisible - 1) * root.wpGap
+    property int wpListH: root.wpRowsVisible * root.wpCellH
     property int wpInputBase: root.wpCount > 0 ? 1 : 0
-    property int wallHintH: 14
-    property int wallWrapPad: 6
+    property int wallHintH: 18
+    property int wallWrapPad: 4
     property int inputRows: 3
     property int sectionH: 18
     property int enabledCount: Services.Monitors.enabledMonitors().length
@@ -683,18 +719,28 @@ BasePopup {
             }
         }
 
-        GeneralTab {
-            id: generalTab
-            popup: root
-        }
-
-        SystemTab {
-            popup: root
-        }
-
-        DisplaysTab {
-            id: displaysTab
-            popup: root
+        Flickable {
+            id: settingsScroll
+            width: parent.width
+            height: Math.max(0, parent.height - tabRow.height - Services.Theme.popupSpacing)
+            contentHeight: tabContents.implicitHeight
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+            Column {
+                id: tabContents
+                width: settingsScroll.width
+                GeneralTab {
+                    id: generalTab
+                    popup: root
+                }
+                SystemTab {
+                    popup: root
+                }
+                DisplaysTab {
+                    id: displaysTab
+                    popup: root
+                }
+            }
         }
     }
 }

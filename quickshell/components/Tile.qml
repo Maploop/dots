@@ -14,7 +14,8 @@ Rectangle {
     signal hovered
     width: root.wide ? parent.width : (parent.width - 8) / columns
     height: Services.Theme.tileHeight
-    color: !root.available ? Services.Theme.transparent : root.accentButton ? Services.Theme.accent : root.selected ? Services.Theme.accent : root.active ? Services.Theme.activeBg : hover.containsMouse ? Services.Theme.hoverBg : Services.Theme.surface
+    Behavior on color { ColorAnimation { duration: Services.Theme.hoverDuration } }
+    color: !root.available ? Services.Theme.transparent : root.accentButton ? Services.Theme.accent : root.selected ? Services.Theme.accent : root.active ? Services.Theme.popupActiveBg : hover.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.popupSurface
     opacity: root.available ? 1 : 0.45
     Column {
         anchors.centerIn: parent

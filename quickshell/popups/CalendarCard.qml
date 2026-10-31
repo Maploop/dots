@@ -7,7 +7,7 @@ Rectangle {
     property bool focused: false
     property var popup: null
     width: parent.width
-    color: Services.Theme.bg
+    color: Services.Theme.transparent
     border.color: Services.Theme.accent
     border.width: root.focused ? 1 : 0
     readonly property int gridHeight: 156
@@ -177,7 +177,7 @@ Rectangle {
                     readonly property bool showDay: root.focused || isTodayCell || isSelectedCell
                     width: parent.width / 7
                     height: 26
-                    color: showDay ? (isSelectedCell ? Services.Theme.accent : isTodayCell ? Services.Theme.activeBg : Services.Theme.bg) : Services.Theme.transparent
+                    color: showDay ? (isSelectedCell ? Services.Theme.accent : isTodayCell ? Services.Theme.popupActiveBg : Services.Theme.transparent) : Services.Theme.transparent
                     Text {
                         anchors.centerIn: parent
                         text: modelData === 0 ? "" : modelData

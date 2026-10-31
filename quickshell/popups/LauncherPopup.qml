@@ -6,8 +6,9 @@ import "../services" as Services
 BasePopup {
     id: root
     anchorMode: "middle"
+    attachToBar: Services.Theme.launcherAttachedToBar
     focusTarget: search.input
-    implicitWidth: Services.Theme.launcherWidth
+    preferredWidth: Services.Theme.launcherWidth
     implicitHeight: 16 + Services.Theme.rowHeight + Services.Theme.popupSpacing * 2 + Services.Theme.listHeight(Services.Theme.listVisible) + hint.implicitHeight
     function quitArmed(): bool {
         return !search.hasFocus;

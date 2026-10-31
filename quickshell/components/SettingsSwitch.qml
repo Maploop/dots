@@ -14,7 +14,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         width: 44
         height: 22
-        radius: 11
+        radius: Services.Theme.controlRadius
         color: root.on ? Services.Theme.accent : Services.Theme.hoverBg
         border.width: 1
         border.color: root.on ? Services.Theme.accent : Services.Theme.dim
@@ -23,7 +23,7 @@ Item {
             x: root.on ? 24 : 2
             width: 18
             height: 18
-            radius: 9
+            radius: Services.Theme.controlRadius
             color: root.on ? Services.Theme.accentFg : Services.Theme.dim
         }
         MouseArea {

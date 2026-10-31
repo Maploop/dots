@@ -5,8 +5,7 @@ import "../services" as Services
 BasePopup {
     id: root
     required property var clock
-    anchorMode: "right"
-    implicitWidth: Services.Theme.popupWidth
+    preferredWidth: Services.Theme.popupWidth
     implicitHeight: 256
     property date viewDate: new Date(clock.date.getFullYear(), clock.date.getMonth(), 1)
     property int selectedDay: clock.date.getDate()
@@ -168,7 +167,7 @@ BasePopup {
                     readonly property bool isSelectedCell: modelData > 0 && modelData === root.selectedDay
                     width: parent.width / 7
                     height: 26
-                    color: isSelectedCell ? Services.Theme.accent : isTodayCell ? Services.Theme.activeBg : Services.Theme.transparent
+                    color: isSelectedCell ? Services.Theme.accent : isTodayCell ? Services.Theme.popupActiveBg : Services.Theme.transparent
                     Text {
                         anchors.centerIn: parent
                         text: modelData === 0 ? "" : modelData

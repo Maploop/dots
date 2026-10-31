@@ -4,7 +4,7 @@ import "../components"
 import "../services" as Services
 DeviceListBase {
     id: root
-    implicitWidth: Services.Theme.popupWidth
+    preferredWidth: Services.Theme.popupWidth
     implicitHeight: (root.inAuth ? authCol.height : wifiList.height) + 36 + 36 + Services.Theme.popupSpacing * 3 + 16 + hint.implicitHeight
     targetList: wifiList
     listBlocked: root.inAuth || root.isBusy
@@ -292,7 +292,7 @@ DeviceListBase {
             Rectangle {
                 width: parent.width
                 height: Services.Theme.rowHeight
-                color: Services.Theme.surface
+                color: Services.Theme.popupSurface
                 border.width: 1
                 border.color: Services.Theme.border
                 TextInput {

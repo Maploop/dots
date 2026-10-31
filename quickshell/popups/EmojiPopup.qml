@@ -10,7 +10,7 @@ import "../emoji/emoji.js" as EmojiData
 BasePopup {
     id: root
     anchorMode: "middle"
-    implicitWidth: Services.Theme.settingsWidth
+    preferredWidth: Services.Theme.settingsWidth
     implicitHeight: 16 + Services.Theme.rowHeight + Services.Theme.popupSpacing + resultGrid.cellHeight * root.gridRows
     readonly property int gridCols: 10
     readonly property int gridRows: 9
@@ -247,7 +247,7 @@ BasePopup {
                 readonly property bool selected: resultGrid.currentIndex === index
                 width: GridView.view.cellWidth
                 height: GridView.view.cellHeight
-                color: selected ? Services.Theme.accent : cellArea.containsMouse ? Services.Theme.hoverBg : Services.Theme.transparent
+                color: selected ? Services.Theme.accent : cellArea.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.transparent
                 MouseArea {
                     id: cellArea
                     anchors.fill: parent

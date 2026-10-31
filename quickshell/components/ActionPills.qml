@@ -17,7 +17,7 @@ Flow {
             readonly property bool focused: index === root.focusedIndex
             width: actionLabel.width + 16
             height: 24
-            color: focused ? Services.Theme.accent : actionArea.containsMouse ? Services.Theme.hoverBg : Services.Theme.surface
+            color: focused ? Services.Theme.accent : actionArea.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.popupSurface
             Text {
                 id: actionLabel
                 anchors.centerIn: parent

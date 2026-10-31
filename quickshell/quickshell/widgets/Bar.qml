@@ -1,0 +1,159 @@
+import QtQuick
+import Quickshell
+import Quickshell.Hyprland
+import Quickshell.Wayland
+import "../components"
+import "../services" as Services
+
+PanelWindow {
+    id: bar
+
+    required property var lockContext
+    required property var sessionLock
+    required property var screenshotTool
+
+    anchors {
+        top: true
+        left: true
+        right: true
+    }
+
+    readonly property string focusedName: Hyprland.focusedMonitor?.name ?? ""
+    property var mainScreen: Services.Monitors.mainScreen(Quickshell.screens)
+    screen: bar.mainScreen ?? Quickshell.screens[0] ?? null
+    readonly property string mainName: bar.mainScreen?.name ?? ""
+
+    function currentPopupAnchor(): var {
+        return Services.Bars.anchorForScreen(bar.focusedName) ?? bar;
+    }
+    function syncBarReg(): void {
+        Services.Bars.syncBar(bar, bar.mainName);
+    }
+    function syncPerfSuspend(): void {
+        const req = bar.sessionLock ? bar.sessionLock.locked === true : false;
+        const shown = bar.lockContext ? bar.lockContext.lockShown === true : false;
+        Services.Perf.suspended = req || shown;
+    }
+    Component.onCompleted: {
+        bar.syncBarReg();
+        bar.syncPerfSuspend();
+    }
+    Component.onDestruction: Services.Bars.unregisterBar(bar)
+    onMainNameChanged: bar.syncBarReg()
+
+    Connections {
+        target: bar.sessionLock
+        function onLockedChanged(): void {
+            bar.syncPerfSuspend();
+        }
+    }
+    Connections {
+        target: bar.lockContext
+        function onLockShownChanged(): void {
+            bar.syncPerfSuspend();
+        }
+    }
+
+    implicitHeight: Services.Theme.barHeight
+    exclusiveZone: implicitHeight
+    color: Services.Theme.barBg
+    BarDivider {}
+    WlrLayershell.namespace: "qs-bar"
+
+    readonly property var bodyPanel: popups.bodyPanel
+    readonly property int rightPopupBottom: popups.rightPopupBottom
+    readonly property int rightPopupWidth: popups.rightPopupWidth
+    function popupByName(name: string): var { return popups.popupByName(name); }
+    function closePopups(): void { popups.closePopups(); }
+    function togglePopup(name: string): void { popups.togglePopup(name); }
+    function openFromPanel(name: string): void { popups.openFromPanel(name); }
+    function openExclusive(target, returnTo = null): void { popups.openExclusive(target, returnTo); }
+    function revealHistory(i: int): void { popups.revealHistory(i); }
+    function followPopupAnchor(): void { popups.followPopupAnchor(bar.currentPopupAnchor()); }
+
+    function lockScreen(): void {
+        bar.closePopups();
+        if (lockContext && typeof lockContext.reset === "function")
+            lockContext.reset();
+        if (sessionLock)
+            sessionLock.locked = true;
+    }
+    function handlePowerKey(): void {
+        bar.closePopups();
+        bar.lockScreen();
+        Services.Power.lock();
+        if (Services.Power.hasLogind)
+            suspendDelay.restart();
+    }
+    Timer {
+        id: suspendDelay
+        interval: 600
+        repeat: false
+        onTriggered: Quickshell.execDetached(["systemctl", "suspend", "-i"])
+    }
+    function screenshot(mode: string): void {
+        const m = typeof mode === "string" ? mode : "";
+        if (m !== "area" && m !== "window" && m !== "full" && m !== "") {
+            console.warn("quickshell: rejecting invalid screenshot mode: " + m.slice(0, 32));
+            return;
+        }
+        screenshotTool.capture(m === "" ? "full" : m);
+    }
+    function unlocked(): bool {
+        return !(bar.sessionLock && bar.sessionLock.locked === true);
+    }
+
+    Connections {
+        target: Hyprland
+        function onFocusedWorkspaceChanged(): void { bar.followPopupAnchor(); }
+    }
+    Connections {
+        target: Services.Bars
+        function onBarByScreenChanged(): void { bar.followPopupAnchor(); }
+    }
+    onFocusedNameChanged: bar.followPopupAnchor()
+    onScreenChanged: bar.followPopupAnchor()
+    readonly property int screenCount: Quickshell.screens.length
+    onScreenCountChanged: {
+        bar.followPopupAnchor();
+        Services.Monitors.refreshMonitors(true);
+    }
+
+    DepCheck {}
+
+    MonitorHeader {
+        screenName: bar.mainName
+    }
+    SystemClock {
+        id: systemClock
+        precision: SystemClock.Minutes
+    }
+    Row {
+        id: systemStatus
+        anchors {
+            right: parent.right
+            rightMargin: Services.Theme.barMargin
+            verticalCenter: parent.verticalCenter
+        }
+        spacing: Services.Theme.groupSpacing
+        SystemGroup {
+            bar: bar
+        }
+        BellIcon {
+            bar: bar
+        }
+        Clock {
+            bar: bar
+            clockSource: systemClock
+        }
+    }
+
+    BarPopups {
+        id: popups
+        bar: bar
+        clock: systemClock
+    }
+    BarShortcuts {
+        bar: bar
+    }
+}

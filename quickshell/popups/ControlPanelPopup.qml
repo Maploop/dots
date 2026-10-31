@@ -8,19 +8,21 @@ import "../services" as Services
 import "control"
 BasePopup {
     id: root
-    property var body: null
-    extraGrabWindows: root.body != null ? [root.body] : []
-    implicitWidth: Services.Theme.popupWidth
-    implicitHeight: 2 * Services.Theme.popupPadding + card.contentHeight
+    anchorMode: "right"
+    required property var clock
+    readonly property alias body: bodyPanel
+    readonly property int controlsHeight: card.height + 2 * Services.Theme.popupPadding
+    preferredWidth: Services.Theme.controlCenterWidth
+    implicitHeight: Math.min(root.controlsHeight + Services.Theme.popupSpacing + bodyPanel.implicitHeight, root.availableHeight)
     PanelNavKeys {
         host: root
         panel: root
-        navActive: !(bar.bodyPanel?.visible ?? false)
     }
-    Shortcut { sequence: "["; enabled: root.visible && !(bar.bodyPanel?.visible ?? false); onActivated: root.stepSection(-1) }
-    Shortcut { sequence: "]"; enabled: root.visible && !(bar.bodyPanel?.visible ?? false); onActivated: root.stepSection(1) }
+    Shortcut { sequence: "["; enabled: root.visible; onActivated: root.stepSection(-1) }
+    Shortcut { sequence: "]"; enabled: root.visible; onActivated: root.stepSection(1) }
     onVisibleChanged: {
         if (visible) {
+            controlScroll.contentY = 0;
             selectedIndex = 0;
             actionIndex = -1;
             mprisCol = 1;
@@ -53,7 +55,9 @@ BasePopup {
             s.push({ kind: "clear", count: 1 });
             s.push({ kind: "history", count: Services.Notifs.history.length });
         }
-        s.push({ kind: "calendar", count: 1 });
+        s.push({ kind: "calendarToggle", count: 1 });
+        if (root.body?.calendarExpanded ?? false)
+            s.push({ kind: "calendar", count: 1 });
         let start = 0;
         for (const e of s) {
             e.start = start;
@@ -89,14 +93,16 @@ BasePopup {
     function firstCalIdx(): int {
         return root.sectionStart("calendar");
     }
+    function calendarToggleIdx(): int {
+        return root.sectionStart("calendarToggle");
+    }
     function calCard(): var {
         return root.body?.calendar ?? null;
     }
     function exitCalendarFocus(): void {
         if (root.selectedKind() !== "calendar")
             return;
-        actionIndex = -1;
-        root.stepSelection(-1);
+        root.body?.setCalendarExpanded(false);
     }
     function handleEscape(): void {
         const now = Date.now();
@@ -118,12 +124,6 @@ BasePopup {
     }
     function quitAction(): void {
         root.handleEscape();
-    }
-    function escArmed(): bool {
-        return !(bar.bodyPanel?.visible ?? false);
-    }
-    function quitArmed(): bool {
-        return !(bar.bodyPanel?.visible ?? false);
     }
     function itemCount(): int {
         const last = root.sections[root.sections.length - 1];
@@ -189,8 +189,11 @@ BasePopup {
     }
     function revealSelection(): void {
         const kind = root.selectedKind();
-        if (kind === "calendar")
+        if (kind === "calendar" || kind === "calendarToggle") {
+            controlScroll.contentY = Math.max(0, controlScroll.contentHeight - controlScroll.height);
             return;
+        }
+        controlScroll.contentY = 0;
         if (kind === "history")
             bar.revealHistory(root.selectedHistItem());
         else if (kind === "clear")
@@ -303,6 +306,8 @@ BasePopup {
         }
         else if (kind === "calendar")
             root.calCard()?.moveSelection(dir);
+        else if (kind === "calendarToggle")
+            root.body?.setCalendarExpanded(dir > 0);
         else if (kind === "history")
             root.moveAction(dir);
         else
@@ -432,6 +437,10 @@ BasePopup {
             root.clampSelection();
             return;
         }
+        if (kind === "calendarToggle") {
+            root.body?.toggleCalendar();
+            return;
+        }
         if (kind === "calendar") {
             root.calCard()?.openSelected();
             return;
@@ -449,30 +458,53 @@ BasePopup {
     PwObjectTracker {
         objects: [root.micSource]
     }
-    PopupCard {
-        id: card
-        StatusRow {
-            id: statusRow
-        }
-        BrightnessRow {
-            id: brightnessRow
-            popup: root
-        }
-        VolumeRow {
-            id: volumeRow
-            popup: root
-        }
-        MprisRow {
-            id: mprisRow
-            popup: root
-        }
-        TileGrid {
-            id: tileGrid
-            popup: root
-        }
-        TrayRow {
-            id: trayRow
-            popup: root
+    // One window presents the controls, notifications and calendar in one frame.
+    Flickable {
+        id: controlScroll
+        anchors.fill: parent
+        anchors.margins: Services.Theme.popupPadding
+        contentHeight: controlColumn.implicitHeight
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        Column {
+            id: controlColumn
+            width: controlScroll.width
+            spacing: Services.Theme.popupSpacing
+            PopupCard {
+                id: card
+                anchors.fill: null
+                width: parent.width
+                height: contentHeight
+                padding: 0
+                StatusRow {
+                    id: statusRow
+                }
+                BrightnessRow {
+                    id: brightnessRow
+                    popup: root
+                }
+                VolumeRow {
+                    id: volumeRow
+                    popup: root
+                }
+                MprisRow {
+                    id: mprisRow
+                    popup: root
+                }
+                TileGrid {
+                    id: tileGrid
+                    popup: root
+                }
+                TrayRow {
+                    id: trayRow
+                    popup: root
+                }
+            }
+            ControlBodyPopup {
+                id: bodyPanel
+                controlPanel: root
+                clock: root.clock
+            }
         }
     }
 }

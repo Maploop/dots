@@ -33,7 +33,7 @@ Item {
         id: header
         width: parent.width
         height: Services.Theme.rowHeight
-        color: root.open ? Services.Theme.activeBg : root.selected ? Services.Theme.accent : headerHover.containsMouse ? Services.Theme.hoverBg : Services.Theme.surface
+        color: root.open ? Services.Theme.popupActiveBg : root.selected ? Services.Theme.accent : headerHover.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.popupSurface
         Text {
             id: headerLabel
             anchors {
@@ -84,7 +84,7 @@ Item {
         height: root.menuHeight()
         y: root.openUp ? -(root.menuHeight() + Services.Theme.listSpacing) : Services.Theme.rowHeight + Services.Theme.listSpacing
         z: 100
-        color: Services.Theme.bg
+        color: Services.Theme.popupBg
         border.width: 1
         border.color: Services.Theme.border
         MouseArea {
@@ -110,7 +110,7 @@ Item {
                 readonly property bool isCursor: index === root.cursor
                 selected: isCursor
                 highlighted: isCurrent
-                baseColor: Services.Theme.surface
+                baseColor: Services.Theme.popupSurface
                 onHovered: root.optionHovered(index)
                 onClicked: root.optionClicked(modelData)
                 Text {

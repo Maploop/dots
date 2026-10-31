@@ -6,7 +6,7 @@ import "../components"
 import "../services" as Services
 DeviceListBase {
     id: root
-    implicitWidth: Services.Theme.popupWidth
+    preferredWidth: Services.Theme.popupWidth
     implicitHeight: 36 + 36 + Services.Theme.listHeight(Services.Theme.listVisible) + Services.Theme.popupSpacing * 3 + 16 + hint.implicitHeight
     targetList: btList
     listBlocked: root.pairingAddr !== ""

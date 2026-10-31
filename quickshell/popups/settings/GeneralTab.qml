@@ -14,10 +14,10 @@ Column {
         width: parent.width
         height: popup.sectionH
         verticalAlignment: Text.AlignVCenter
-        text: Services.Settings.wallpapers.length > 0 ? "Wallpaper  ·  " + Services.Settings.wallpapers.length : "Wallpaper"
-        color: popup.tab === 0 && popup.selectedIndex === 0 ? Services.Theme.fg : Services.Theme.dim
+        text: popup.wpCount > 0 ? "Choose a wallpaper  ·  " + popup.wpCount + " images" : "Wallpaper"
+        color: Services.Theme.fg
         font.family: Services.Theme.font
-        font.pixelSize: Services.Theme.px11
+        font.pixelSize: Services.Theme.px13
     }
     Column {
         width: parent.width
@@ -29,8 +29,9 @@ Column {
             Rectangle {
                 anchors.fill: parent
                 color: Services.Theme.transparent
-                border.width: 1
-                border.color: popup.tab === 0 && popup.selectedIndex === 0 ? Services.Theme.accent : Services.Theme.border
+                radius: Services.Theme.popupRadius
+                border.width: popup.wallFocus ? 1 : 0
+                border.color: Services.Theme.accent
             }
             GridView {
                 id: wallList
@@ -40,6 +41,7 @@ Column {
                 flow: GridView.FlowLeftToRight
                 cellWidth: Math.max(1, Math.floor(width / popup.wpCols))
                 cellHeight: popup.wpCellH
+                boundsBehavior: Flickable.StopAtBounds
                 cacheBuffer: popup.wpCellH * 3
                 model: Services.Settings.wallpapers
                 onCountChanged: popup.syncWallCursor()
@@ -53,19 +55,25 @@ Column {
                     height: GridView.view.cellHeight
                     Rectangle {
                         anchors.fill: parent
-                        anchors.margins: 2
-                        color: cell.selected || thumbHover.containsMouse ? Services.Theme.activeBg : Services.Theme.surface
+                        anchors.margins: popup.wpGap / 2
+                        radius: Services.Theme.popupRadius
+                        color: cell.selected || thumbHover.containsMouse ? Services.Theme.popupHoverBg : Services.Theme.popupSurface
+                        border.width: cell.current || cell.selected ? 2 : 1
+                        border.color: cell.current || cell.selected ? Services.Theme.accent : Services.Theme.border
+                        Behavior on border.color { ColorAnimation { duration: Services.Theme.hoverDuration } }
+                        Behavior on color { ColorAnimation { duration: Services.Theme.hoverDuration } }
                         clip: true
                         Image {
+                            id: thumbnail
                             anchors {
                                 top: parent.top
                                 left: parent.left
                                 right: parent.right
                                 bottom: nameLabel.top
-                                topMargin: 4
-                                leftMargin: 4
-                                rightMargin: 4
-                                bottomMargin: 4
+                                topMargin: 6
+                                leftMargin: 6
+                                rightMargin: 6
+                                bottomMargin: 6
                             }
                             source: "file://" + cell.modelData
                             fillMode: Image.PreserveAspectCrop
@@ -73,7 +81,36 @@ Column {
                             cache: true
                             smooth: true
                             mipmap: true
-                            sourceSize.width: 256
+                            sourceSize.width: 512
+                            sourceSize.height: 288
+                            Text {
+                                anchors.centerIn: parent
+                                visible: thumbnail.status !== Image.Ready
+                                text: thumbnail.status === Image.Error ? "Preview unavailable" : "Loading…"
+                                color: Services.Theme.dim
+                                font.family: Services.Theme.font
+                                font.pixelSize: Services.Theme.px11
+                            }
+                            Rectangle {
+                                anchors {
+                                    top: parent.top
+                                    right: parent.right
+                                    margins: 8
+                                }
+                                visible: cell.current
+                                width: currentLabel.implicitWidth + 16
+                                height: 24
+                                radius: Services.Theme.controlRadius
+                                color: Services.Theme.accent
+                                Text {
+                                    id: currentLabel
+                                    anchors.centerIn: parent
+                                    text: "✓ Current"
+                                    color: Services.Theme.accentFg
+                                    font.family: Services.Theme.font
+                                    font.pixelSize: Services.Theme.px11
+                                }
+                            }
                         }
                         Text {
                             id: nameLabel
@@ -81,17 +118,17 @@ Column {
                                 left: parent.left
                                 right: parent.right
                                 bottom: parent.bottom
-                                leftMargin: 6
-                                rightMargin: 6
-                                bottomMargin: 3
+                                leftMargin: 10
+                                rightMargin: 10
+                                bottomMargin: 6
                             }
-                            height: 17
+                            height: 24
                             verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            text: (cell.current ? "✓ " : "") + String(cell.modelData).split("/").pop()
+                            horizontalAlignment: Text.AlignLeft
+                            text: String(cell.modelData).split("/").pop().replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ")
                             color: cell.selected ? Services.Theme.fg : cell.current ? Services.Theme.accent : thumbHover.containsMouse ? Services.Theme.fg : Services.Theme.dim
                             font.family: Services.Theme.font
-                            font.pixelSize: Services.Theme.px10
+                            font.pixelSize: Services.Theme.px12
                             elide: Text.ElideRight
                         }
                         MouseArea {
@@ -134,7 +171,7 @@ Column {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
-            text: popup.wallFocus ? "Arrows move · Enter applies · Esc exits" : "Enter to browse with keyboard"
+            text: popup.wallFocus ? "Arrows move · Enter applies · Esc exits" : "Click to apply · Enter to browse with keyboard"
             color: Services.Theme.dim
             font.family: Services.Theme.font
             font.pixelSize: Services.Theme.px10

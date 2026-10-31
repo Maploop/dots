@@ -36,7 +36,7 @@ BarIcon {
         }
         width: 8
         height: 8
-        radius: 4
+        radius: Services.Theme.indicatorRadius
         visible: !root.dnd && root.hasUnread
         color: root.dnd ? Services.Theme.danger : Services.Theme.accent
         border.color: Services.Theme.barBg
