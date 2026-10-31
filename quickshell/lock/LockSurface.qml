@@ -122,7 +122,7 @@ Item {
             asynchronous: true
             cache: true
             smooth: true
-            mipmap: true
+            mipmap: false
             sourceSize.width: root.ownScreen?.width ?? 0
             sourceSize.height: root.ownScreen?.height ?? 0
         }

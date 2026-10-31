@@ -9,6 +9,8 @@ PopupWindow {
     property real preferredWidth: Services.Theme.popupWidth
     implicitWidth: Math.min(base.preferredWidth, base.availableWidth)
     property string anchorMode: "middle"
+    // Optional center point in the bar window for popups tied to a specific bar item.
+    property real anchorCenterX: -1
     property bool attachToBar: true
     property int extraTop: 0
     property bool useGrab: true
@@ -110,7 +112,7 @@ PopupWindow {
     readonly property bool anchorFullscreen: Services.Bars.isAnyFullscreen(base.anchorScreenName)
     readonly property real attachedTop: (base.anchorFullscreen ? 0 : Services.Theme.barHeight) + Services.Theme.popupBarGap + base.extraTop
     readonly property real centeredTop: Math.max(Services.Theme.popupMargin, (base.anchorScreenHeight - base.height) / 2)
-    anchor.rect.x: base.anchorMode === "middle" ? anchorWidth / 2 - width / 2 : anchorWidth - width - Services.Theme.popupMargin
+    anchor.rect.x: base.anchorCenterX >= 0 ? Math.max(Services.Theme.popupMargin, Math.min(anchorWidth - width - Services.Theme.popupMargin, base.anchorCenterX - width / 2)) : base.anchorMode === "middle" ? anchorWidth / 2 - width / 2 : anchorWidth - width - Services.Theme.popupMargin
     anchor.rect.y: base.attachToBar ? base.attachedTop : base.centeredTop
     visible: false
     color: Services.Theme.transparent

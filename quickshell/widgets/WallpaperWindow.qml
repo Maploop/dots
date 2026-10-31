@@ -43,7 +43,8 @@ PanelWindow {
         asynchronous: true
         cache: true
         smooth: true
-        mipmap: true
+        // Screen-sized images do not need extra mipmap textures.
+        mipmap: false
         opacity: 0
         sourceSize.width: root.modelData?.width ?? 0
         sourceSize.height: root.modelData?.height ?? 0
@@ -60,7 +61,7 @@ PanelWindow {
         asynchronous: true
         cache: true
         smooth: true
-        mipmap: true
+        mipmap: false
         opacity: 0
         scale: root.zoomFrom
         transformOrigin: Item.Center

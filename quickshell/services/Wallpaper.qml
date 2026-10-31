@@ -9,6 +9,8 @@ Singleton {
     property bool scanDone: false
     property bool notifiedEmpty: false
 
+    onSourceChanged: Theme.refreshFromWallpaper(root.source)
+
     function applyOverride(path: string): void {
         root.override = typeof path === "string" ? path : "";
         root.resolve();
@@ -42,4 +44,6 @@ Singleton {
                 root.resolve();
         }
     }
+
+    Component.onCompleted: Theme.refreshFromWallpaper(root.source)
 }

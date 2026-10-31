@@ -15,6 +15,8 @@ Item {
     property bool launcherRequested: false
     property bool clipboardRequested: false
     property bool emojiRequested: false
+    property bool trayRequested: false
+    property bool mediaRequested: false
     property string pendingOpen: ""
     property var pendingReturnTo: null
     property var coveredPopups: []
@@ -59,9 +61,11 @@ Item {
     readonly property var launcherPopup: launcherLoader.item
     readonly property var clipboardPopup: clipboardLoader.item
     readonly property var emojiPopup: emojiLoader.item
+    readonly property var trayPopup: trayLoader.item
+    readonly property var mediaPopup: mediaLoader.item
 
     readonly property var allPopups: root.exclusivePopups
-    readonly property var exclusivePopups: [controlPanelPopup, wifiPopup, bluetoothPopup, powerPopup, root.settingsPopup, root.launcherPopup, root.clipboardPopup, root.emojiPopup]
+    readonly property var exclusivePopups: [controlPanelPopup, wifiPopup, bluetoothPopup, powerPopup, root.settingsPopup, root.launcherPopup, root.clipboardPopup, root.emojiPopup, root.trayPopup, root.mediaPopup]
     readonly property var rightPopups: root.allPopups.filter(p => p && p.anchorMode === "right")
 
     property int rightPopupBottom: {
@@ -92,6 +96,8 @@ Item {
         case "launcher": return root.launcherPopup;
         case "clipboard": return root.clipboardPopup;
         case "emoji": return root.emojiPopup;
+        case "tray": return root.trayPopup;
+        case "media": return root.mediaPopup;
         default: return null;
         }
     }
@@ -104,6 +110,10 @@ Item {
             root.clipboardRequested = true;
         else if (name === "emoji")
             root.emojiRequested = true;
+        else if (name === "tray")
+            root.trayRequested = true;
+        else if (name === "media")
+            root.mediaRequested = true;
         return root.popupByName(name);
     }
     function flushPending(): void {
@@ -137,6 +147,8 @@ Item {
             root.closeForPicker(name);
             return;
         }
+        if (name === "media" && !Services.Media.spotifyAvailable)
+            return;
         const target = root.ensurePopup(name);
         if (target) {
             root.pendingOpen = "";
@@ -152,6 +164,8 @@ Item {
             root.closeForPicker(name, controlPanelPopup);
             return;
         }
+        if (name === "media" && !Services.Media.spotifyAvailable)
+            return;
         const target = root.ensurePopup(name);
         if (target) {
             root.pendingOpen = "";
@@ -164,6 +178,8 @@ Item {
     }
     function openExclusive(target, returnTo = null): void {
         if (!target)
+            return;
+        if (target === root.mediaPopup && !Services.Media.spotifyAvailable)
             return;
         const open = !target.visible;
         if (open && root.pickerActive)
@@ -220,6 +236,26 @@ Item {
     PowerPopup {
         id: powerPopup
         bar: root.bar
+    }
+    LazyLoader {
+        id: mediaLoader
+        active: root.mediaRequested
+        component: Component {
+            MediaPopup {
+                bar: root.bar
+            }
+        }
+        onItemChanged: root.flushPending()
+    }
+    LazyLoader {
+        id: trayLoader
+        active: root.trayRequested
+        component: Component {
+            TrayPopup {
+                bar: root.bar
+            }
+        }
+        onItemChanged: root.flushPending()
     }
     LazyLoader {
         id: settingsLoader

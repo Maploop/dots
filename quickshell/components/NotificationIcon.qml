@@ -33,6 +33,7 @@ Item {
         anchors.fill: parent
         visible: root.recolorable && root.resolvedSource !== ""
         source: img
+        shadowEnabled: false
         brightness: 0.6
         colorization: root.tint.a > 0 ? 1.0 : 0.0
         colorizationColor: root.tint

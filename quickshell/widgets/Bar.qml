@@ -63,6 +63,7 @@ PanelWindow {
     readonly property var bodyPanel: popups.bodyPanel
     readonly property int rightPopupBottom: popups.rightPopupBottom
     readonly property int rightPopupWidth: popups.rightPopupWidth
+    readonly property real mediaPopupCenterX: systemStatus.x + mediaIndicator.x + mediaIndicator.width / 2
     function popupByName(name: string): var { return popups.popupByName(name); }
     function closePopups(): void { popups.closePopups(); }
     function togglePopup(name: string): void { popups.togglePopup(name); }
@@ -136,6 +137,10 @@ PanelWindow {
             verticalCenter: parent.verticalCenter
         }
         spacing: Services.Theme.groupSpacing
+        MediaIndicator {
+            id: mediaIndicator
+            bar: bar
+        }
         SystemGroup {
             bar: bar
         }
@@ -145,6 +150,9 @@ PanelWindow {
         Clock {
             bar: bar
             clockSource: systemClock
+        }
+        Tray {
+            bar: bar
         }
     }
 

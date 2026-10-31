@@ -128,6 +128,27 @@ Singleton {
     readonly property int usableCount: media._players.length
     readonly property var activePlayer: media._players.length > 0 ? media._players[0] : null
     readonly property int activePlayerIndex: media._stable.indexOf(media.activePlayer)
+    function isSpotify(player): bool {
+        if (!player)
+            return false;
+        const values = [player.identity, player.desktopEntry, player.dbusName];
+        return values.some(value => String(value ?? "").toLowerCase().includes("spotify"));
+    }
+    readonly property var spotifyPlayer: media._players.find(player => media.isSpotify(player)) ?? null
+    readonly property bool spotifyAvailable: media.spotifyPlayer !== null
+    function refreshArtworkAccent(): void {
+        const source = String(media.spotifyPlayer?.trackArtUrl ?? "");
+        if (source === "") {
+            Theme.clearArtworkAccent();
+            return;
+        }
+        Theme.refreshArtworkAccent(source);
+    }
+    onSpotifyPlayerChanged: media.refreshArtworkAccent()
+    Connections {
+        target: media.spotifyPlayer
+        function onTrackArtUrlChanged(): void { media.refreshArtworkAccent(); }
+    }
     function playerCount(): int {
         return media.usableCount;
     }
@@ -237,6 +258,7 @@ Singleton {
         }
     }
     Component.onCompleted: {
+        media.refreshArtworkAccent();
         if (!brightnessProbe.running)
             brightnessProbe.running = true;
     }

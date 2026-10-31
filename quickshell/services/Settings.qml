@@ -9,6 +9,8 @@ Singleton {
 
     property string wallpaperOverride: ""
     property var wallpapers: []
+    property bool wallpaperPaletteEnabled: Theme.wallpaperPaletteEnabled
+    property string wallpaperPaletteMode: Theme.wallpaperPaletteMode
 
     property real sensitivity: 0
     property real touchScroll: 0.8
@@ -46,6 +48,8 @@ Singleton {
     function snapshot(): var {
         return {
             wallpaperOverride: settings.wallpaperOverride,
+            wallpaperPaletteEnabled: settings.wallpaperPaletteEnabled,
+            wallpaperPaletteMode: settings.wallpaperPaletteMode,
             sensitivity: settings.sensitivity,
             touchScroll: settings.touchScroll,
             naturalScroll: settings.naturalScroll,
@@ -67,6 +71,9 @@ Singleton {
         if (!obj || typeof obj !== "object")
             return;
         settings.wallpaperOverride = U.pickStr(obj.wallpaperOverride, "");
+        settings.wallpaperPaletteEnabled = U.pickBool(obj.wallpaperPaletteEnabled, Theme.wallpaperPaletteEnabled);
+        const defaultPaletteMode = Theme.wallpaperPaletteModes.indexOf(Theme.wallpaperPaletteMode) >= 0 ? Theme.wallpaperPaletteMode : Theme.wallpaperPaletteModes[0];
+        settings.wallpaperPaletteMode = U.pickOpt(obj.wallpaperPaletteMode, defaultPaletteMode, Theme.wallpaperPaletteModes);
         settings.sensitivity = U.num(obj.sensitivity, 0, -1, 1);
         settings.touchScroll = U.num(obj.touchScroll, 0.8, 0.1, 2);
         settings.naturalScroll = U.pickBool(obj.naturalScroll, true);
@@ -84,6 +91,8 @@ Singleton {
     }
 
     function applyAll(): void {
+        Theme.wallpaperPaletteEnabled = settings.wallpaperPaletteEnabled;
+        Theme.wallpaperPaletteMode = settings.wallpaperPaletteMode;
         HyprBridge.hypr("input:sensitivity", String(settings.sensitivity));
         HyprBridge.hypr("input:touchpad:scroll_factor", String(settings.touchScroll));
         HyprBridge.hypr("input:touchpad:natural_scroll", settings.naturalScroll ? "true" : "false");
@@ -95,6 +104,18 @@ Singleton {
             return;
         settings.wallpaperOverride = path;
         Wallpaper.applyOverride(path);
+        settings.scheduleSave();
+    }
+    function setWallpaperPaletteEnabled(enabled: bool): void {
+        settings.wallpaperPaletteEnabled = enabled;
+        Theme.wallpaperPaletteEnabled = enabled;
+        settings.scheduleSave();
+    }
+    function setWallpaperPaletteMode(mode: string): void {
+        if (Theme.wallpaperPaletteModes.indexOf(mode) < 0)
+            return;
+        settings.wallpaperPaletteMode = mode;
+        Theme.wallpaperPaletteMode = mode;
         settings.scheduleSave();
     }
     function ensureWallpaper(): void {

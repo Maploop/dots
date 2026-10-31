@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import "../../components"
 import "../../services" as Services
@@ -42,7 +44,7 @@ Column {
                 cellWidth: Math.max(1, Math.floor(width / popup.wpCols))
                 cellHeight: popup.wpCellH
                 boundsBehavior: Flickable.StopAtBounds
-                cacheBuffer: popup.wpCellH * 3
+                cacheBuffer: popup.wpCellH
                 model: Services.Settings.wallpapers
                 onCountChanged: popup.syncWallCursor()
                 delegate: Item {
@@ -75,10 +77,11 @@ Column {
                                 rightMargin: 6
                                 bottomMargin: 6
                             }
-                            source: "file://" + cell.modelData
+                            // Release previews when the gallery is not in use.
+                            source: popup.visible && popup.tab === 0 ? "file://" + cell.modelData : ""
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: true
-                            cache: true
+                            cache: false
                             smooth: true
                             mipmap: true
                             sourceSize.width: 512
@@ -181,6 +184,52 @@ Column {
         width: parent.width
         height: popup.sectionH
         verticalAlignment: Text.AlignVCenter
+        text: "Wallpaper colors"
+        color: Services.Theme.dim
+        font.family: Services.Theme.font
+        font.pixelSize: Services.Theme.px11
+    }
+    Column {
+        width: parent.width
+        spacing: Services.Theme.listSpacing
+        SettingsRow {
+            title: "Wallpaper palette"
+            value: Services.Settings.wallpaperPaletteEnabled ? "On" : "Off"
+            selected: popup.tab === 0 && popup.selectedIndex === popup.paletteEnabledIndex
+            onHovered: popup.hoverSelect(popup.paletteEnabledIndex)
+            SettingsSwitch {
+                on: Services.Settings.wallpaperPaletteEnabled
+                onToggled: Services.Settings.setWallpaperPaletteEnabled(!Services.Settings.wallpaperPaletteEnabled)
+            }
+        }
+        SettingsRow {
+            title: "Palette style"
+            selected: popup.tab === 0 && popup.selectedIndex === popup.paletteModeIndex
+            z: popup.paletteDropOpen ? 100 : 0
+            onHovered: popup.hoverSelect(popup.paletteModeIndex)
+            Dropdown {
+                options: Services.Theme.wallpaperPaletteModes
+                current: Services.Settings.wallpaperPaletteMode
+                open: popup.paletteDropOpen
+                selected: popup.tab === 0 && popup.selectedIndex === popup.paletteModeIndex
+                cursor: popup.dropCursor
+                onHeaderClicked: {
+                    popup.selectedIndex = popup.paletteModeIndex;
+                    popup.togglePaletteModeDrop();
+                }
+                onOptionHovered: index => popup.dropCursor = index
+                onOptionClicked: value => {
+                    popup.selectedIndex = popup.paletteModeIndex;
+                    Services.Settings.setWallpaperPaletteMode(value);
+                    popup.closeDrop();
+                }
+            }
+        }
+    }
+    Text {
+        width: parent.width
+        height: popup.sectionH
+        verticalAlignment: Text.AlignVCenter
         text: "Mouse & touchpad"
         color: Services.Theme.dim
         font.family: Services.Theme.font
@@ -192,8 +241,8 @@ Column {
         SettingsSliderRow {
             title: "Sensitivity"
             value: Services.Settings.sensitivity.toFixed(1)
-            selected: popup.tab === 0 && popup.selectedIndex === popup.wpInputBase + 0
-            onHovered: popup.hoverSelect(popup.wpInputBase + 0)
+            selected: popup.tab === 0 && popup.selectedIndex === popup.mouseInputBase + 0
+            onHovered: popup.hoverSelect(popup.mouseInputBase + 0)
             sliderMinimum: -1
             sliderMaximum: 1
             sliderValue: Services.Settings.sensitivity
@@ -202,8 +251,8 @@ Column {
         SettingsSliderRow {
             title: "Touchpad scroll"
             value: Services.Settings.touchScroll.toFixed(1)
-            selected: popup.tab === 0 && popup.selectedIndex === popup.wpInputBase + 1
-            onHovered: popup.hoverSelect(popup.wpInputBase + 1)
+            selected: popup.tab === 0 && popup.selectedIndex === popup.mouseInputBase + 1
+            onHovered: popup.hoverSelect(popup.mouseInputBase + 1)
             sliderMinimum: 0.1
             sliderMaximum: 2
             sliderValue: Services.Settings.touchScroll
@@ -212,8 +261,8 @@ Column {
         SettingsRow {
             title: "Natural scroll"
             value: Services.Settings.naturalScroll ? "On" : "Off"
-            selected: popup.tab === 0 && popup.selectedIndex === popup.wpInputBase + 2
-            onHovered: popup.hoverSelect(popup.wpInputBase + 2)
+            selected: popup.tab === 0 && popup.selectedIndex === popup.mouseInputBase + 2
+            onHovered: popup.hoverSelect(popup.mouseInputBase + 2)
             SettingsSwitch {
                 on: Services.Settings.naturalScroll
                 onToggled: Services.Settings.setNaturalScroll(!Services.Settings.naturalScroll)
