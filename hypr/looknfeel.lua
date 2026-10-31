@@ -8,7 +8,7 @@ hl.config({
 		gaps_out = 6,
 		border_size = 2,
 		col = {
-			active_border = colors.red,
+			active_border = colors.fg,
 			inactive_border = colors.border,
 		},
 		resize_on_border = false,
@@ -140,7 +140,7 @@ hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } 
 
 hl.animation({ leaf = "windows", enabled = true, speed = 3.5, bezier = "smoothOut", style = "popin 95%" })
 
-hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "slidefade 5%" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "slidefade 10%" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "smooth", style = "slidefadevert 5%" })
 
 hl.animation({ leaf = "layers", enabled = true, speed = 3, bezier = "quick", style = "fade" })

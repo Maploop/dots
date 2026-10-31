@@ -30,7 +30,7 @@ Singleton {
     property int popupWidth: 340
     property int settingsWidth: 400
     property int launcherWidth: 480
-    property bool launcherShowIcons: true
+    property bool launcherShowIcons: false
     property int barMargin: 6
     property int popupMargin: 6
     property int popupTopGap: 6
@@ -43,7 +43,7 @@ Singleton {
     property int osdBottomMargin: 20
     property int barHeight: 34
     property bool workspacesOnLeft: true
-    property bool powerShowShortcuts: false
+    property bool powerShowShortcuts: true
     property int groupSpacing: 16
     property int tightSpacing: 8
     property int barIconPadding: 0

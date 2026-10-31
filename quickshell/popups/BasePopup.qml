@@ -41,6 +41,10 @@ PopupWindow {
         if (base.visible && base.useGrab)
             grabTimer.restart();
     }
+    function forceGrab(): void {
+        grab.active = false;
+        grab.active = true;
+    }
     function close(): void {
         const hadGrab = grab.active;
         const back = base.returnTo;
@@ -135,6 +139,8 @@ PopupWindow {
             }
         }
         onCleared: {
+            if (grab.active)
+                return;
             if (!base.visible)
                 return;
             if (base.pickerActive)
