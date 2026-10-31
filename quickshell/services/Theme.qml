@@ -19,7 +19,7 @@ Singleton {
     property string transparent: "transparent"
     property string warn: "#f3be7c"
     property string danger: "#d8647e"
-    property string font: "JetBrainsMono Nerd Font Propo"
+    property string font: "Iosevka Nerd Font Propo"
 
     property int px10: 10
     property int px11: 11

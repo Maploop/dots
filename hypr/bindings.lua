@@ -92,8 +92,3 @@ hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(browser))
 hl.bind("Print", hl.dsp.global("qs:screenshot-area"))
 hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-full"))
 hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-window"))
-
-local ipc = "noctalia msg "
-hl.bind("Print", hl.dsp.exec_cmd(ipc .. "screenshot-region"))
-hl.bind(mainMod .. "+D", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"))
-hl.bind(mainMod .. "+A", hl.dsp.exec_cmd(ipc .. "panel-toggle control-center"))
