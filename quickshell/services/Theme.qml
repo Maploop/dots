@@ -74,7 +74,7 @@ Singleton {
     readonly property color popupHoverBg: root.withAlpha(root.hoverBg, 0.5)
     readonly property color popupActiveBg: root.withAlpha(root.activeBg, 0.6)
     // Corners stay square unless a radius is explicitly enabled here.
-    property int popupRadius: 0
+    property int popupRadius: 12
     // Curves only where attached popups meet the bar; 0 disables them.
     property int popupConnectionRadius: 0
     property int popupSlideDistance: 8
