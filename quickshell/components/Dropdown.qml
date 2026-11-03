@@ -10,6 +10,14 @@ Item {
     property bool openUp: false
     property bool enabled: true
     property int maxVisible: 6
+    // Keep menus inside a scrolling settings page, opening above when needed.
+    property Flickable menuViewport: null
+    readonly property real headerTop: root.open && root.menuViewport ? root.mapToItem(root.menuViewport.contentItem, 0, 0).y - root.menuViewport.contentY : 0
+    readonly property real spaceAbove: Math.max(0, root.headerTop - Services.Theme.listSpacing)
+    readonly property real spaceBelow: root.menuViewport ? Math.max(0, root.menuViewport.height - root.headerTop - root.height - Services.Theme.listSpacing) : root.menuHeight()
+    readonly property bool menuOpensUp: root.openUp || (root.menuViewport !== null && root.menuHeight() > root.spaceBelow && root.spaceAbove > root.spaceBelow)
+    readonly property real visibleMenuHeight: root.menuViewport ? Math.min(root.menuHeight(), root.menuOpensUp ? root.spaceAbove : root.spaceBelow) : root.menuHeight()
+    property real wheelRemainder: 0
     signal headerClicked()
     signal optionClicked(string value)
     signal optionHovered(int index)
@@ -21,11 +29,28 @@ Item {
             return 0;
         return n * Services.Theme.rowHeight + (n - 1) * Services.Theme.listSpacing + 8;
     }
+    function navigateWheel(event, inMenu: bool): void {
+        if (!root.enabled || root.options.length === 0)
+            return;
+        event.accepted = true;
+        root.wheelRemainder += event.pixelDelta.y !== 0 ? -event.pixelDelta.y / Services.Theme.rowHeight : -event.angleDelta.y / 120;
+        const steps = Math.trunc(root.wheelRemainder);
+        if (steps === 0)
+            return;
+        root.wheelRemainder -= steps;
+        const currentIndex = inMenu || root.open ? root.cursor : Math.max(0, root.options.indexOf(root.current));
+        const next = Math.max(0, Math.min(root.options.length - 1, currentIndex + steps));
+        if (inMenu || root.open)
+            root.optionHovered(next);
+        else if (next !== currentIndex)
+            root.optionClicked(root.options[next]);
+    }
     onCursorChanged: {
         if (root.open)
             optList.positionViewAtIndex(root.cursor, ListView.Contain);
     }
     onOpenChanged: {
+        root.wheelRemainder = 0;
         if (root.open)
             optList.positionViewAtIndex(root.cursor, ListView.Contain);
     }
@@ -76,13 +101,14 @@ Item {
                 if (root.enabled)
                     root.headerClicked();
             }
+            onWheel: wheel => root.navigateWheel(wheel, false)
         }
     }
     Rectangle {
         visible: root.open && root.enabled && root.options.length > 0
         width: parent.width
-        height: root.menuHeight()
-        y: root.openUp ? -(root.menuHeight() + Services.Theme.listSpacing) : Services.Theme.rowHeight + Services.Theme.listSpacing
+        height: root.visibleMenuHeight
+        y: root.menuOpensUp ? -(height + Services.Theme.listSpacing) : Services.Theme.rowHeight + Services.Theme.listSpacing
         z: 100
         color: Services.Theme.popupBg
         border.width: 1
@@ -93,7 +119,10 @@ Item {
             acceptedButtons: Qt.AllButtons
             onPressed: mouse => mouse.accepted = true
             onClicked: mouse => mouse.accepted = true
-            onWheel: wheel => wheel.accepted = true
+        }
+        WheelHandler {
+            target: null
+            onWheel: event => root.navigateWheel(event, true)
         }
         ListView {
             id: optList

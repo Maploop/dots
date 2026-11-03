@@ -8,6 +8,7 @@ Singleton {
     id: bars
 
     property var barByScreen: ({})
+    property var attachedPopup: null
 
     function registerBar(name: string, win: var): void {
         if (typeof name !== "string" || name === "" || !win)

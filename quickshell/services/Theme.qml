@@ -75,13 +75,20 @@ Singleton {
     readonly property color popupActiveBg: root.withAlpha(root.activeBg, 0.6)
     // Corners stay square unless a radius is explicitly enabled here.
     property int popupRadius: 0
+    // Curves only where attached popups meet the bar; 0 disables them.
+    property int popupConnectionRadius: 0
+    property int popupSlideDistance: 8
+    // "current" keeps the subtle fade; "slide-from-top" drops down from the bar.
+    // The launcher always keeps its current animation.
+    readonly property var popupAnimationStyles: ["current", "slide-from-top"]
+    property string popupAnimationStyle: "current"
     property int controlRadius: 0
     property int indicatorRadius: 0
     property int motionDuration: 160
     property int hoverDuration: 100
     property string warn: root.staticWarn
     property string danger: root.staticDanger
-    property string font: "Iosevka Nerd Font Propo"
+    property string font: "JetbrainsMono Nerd Font"
 
     property int px10: 10
     property int px11: 11
@@ -97,11 +104,11 @@ Singleton {
     property int wallpaperSelectorWidth: 760
     property int launcherWidth: 480
     property bool launcherAttachedToBar: false
-    property bool launcherShowIcons: false
+    property bool launcherShowIcons: true
     property int barMargin: 6
     property int popupMargin: 6
     property int popupTopGap: 6
-    property int popupBarGap: 0
+    property int popupBarGap: 8 // Space between the bar and its popups.
     property int popupPadding: 8
     property int popupSpacing: 8
     property int rowHeight: 36

@@ -15,6 +15,16 @@ Item {
     width: implicitWidth
     height: implicitHeight
 
+    Rectangle {
+        anchors.centerIn: parent
+        width: parent.width + 12
+        height: Services.Theme.barHeight - 8
+        radius: Services.Theme.indicatorRadius
+        color: root.expanded ? Services.Theme.withAlpha(Services.Theme.accent, 0.14) : Services.Theme.withAlpha(Services.Theme.fg, 0.06)
+        opacity: root.expanded || mediaHover.containsMouse ? 1 : 0
+        Behavior on color { ColorAnimation { duration: Services.Theme.hoverDuration } }
+        Behavior on opacity { NumberAnimation { duration: Services.Theme.hoverDuration } }
+    }
     Row {
         id: mediaRow
         anchors.centerIn: parent
@@ -59,6 +69,7 @@ Item {
         opacity: root.expanded ? 0.95 : 0.35
     }
     MouseArea {
+        id: mediaHover
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor

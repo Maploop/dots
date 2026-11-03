@@ -9,6 +9,7 @@ Item {
     property string tipText: ""
     property var tipAnchor: null
     property bool showPointer: true
+    property bool popupActive: false
     property bool tipHover: false
     property int hPadding: Services.Theme.barIconPadding
     signal clicked
@@ -35,6 +36,16 @@ Item {
     function armTip(): void {
         root.tipHover = true;
         tipTimer.restart();
+    }
+    Rectangle {
+        anchors.centerIn: parent
+        width: parent.width + 12
+        height: Services.Theme.barHeight - 8
+        radius: Services.Theme.indicatorRadius
+        color: root.popupActive ? Services.Theme.withAlpha(Services.Theme.accent, 0.14) : Services.Theme.withAlpha(Services.Theme.fg, 0.06)
+        opacity: root.popupActive || hoverArea.containsMouse ? 1 : 0
+        Behavior on color { ColorAnimation { duration: Services.Theme.hoverDuration } }
+        Behavior on opacity { NumberAnimation { duration: Services.Theme.hoverDuration } }
     }
     Text {
         id: label

@@ -65,6 +65,9 @@ BasePopup {
     readonly property string openMonRes: root.openMenu && root.openMenu.kind === "res" ? root.openMenu.name : ""
     readonly property bool openMainDrop: root.openMenu !== null && root.openMenu.kind === "main"
     readonly property bool paletteDropOpen: root.openMenu !== null && root.openMenu.kind === "palette"
+    readonly property bool animationDropOpen: root.openMenu !== null && root.openMenu.kind === "animation"
+    readonly property var animationLabels: ["Current", "Slide from top"]
+    property alias settingsViewport: settingsScroll
     property int dropCursor: 0
     property bool previewGrab: false
     property string previewGrabName: ""
@@ -239,7 +242,7 @@ BasePopup {
     function revealSelectedRow(): void {
         if (!root.visible)
             return;
-        if (root.tab === 0 && root.selectedIndex === 0) {
+        if (root.tab === 0 && root.wpCount > 0 && root.selectedIndex === 0) {
             settingsScroll.contentY = 0;
             return;
         }
@@ -277,6 +280,10 @@ BasePopup {
             root.moveCursor(Services.Theme.wallpaperPaletteModes, dir);
             return;
         }
+        if (root.tab === 0 && root.animationDropOpen) {
+            root.moveCursor(Services.Theme.popupAnimationStyles, dir);
+            return;
+        }
         if (root.tab === 0 && root.wpCount > 0) {
             if (root.wallFocus && selectedIndex === 0) {
                 let nxt = root.wallCursor + dir * root.wpCols;
@@ -299,7 +306,7 @@ BasePopup {
     }
     function sectionBounds(): var {
         if (root.tab === 0)
-            return root.wpCount > 0 ? [0, root.wpInputBase, root.mouseInputBase] : [root.paletteEnabledIndex, root.mouseInputBase];
+            return root.wpCount > 0 ? [0, root.wpInputBase, root.animationStyleIndex, root.mouseInputBase] : [root.paletteEnabledIndex, root.animationStyleIndex, root.mouseInputBase];
         if (root.tab === 1)
             return [0, 4, root.sysIdx(7)];
         const bounds = [0, 1];
@@ -372,6 +379,17 @@ BasePopup {
                         root.commitPaletteModeCursor();
                 } else {
                     Services.Settings.setWallpaperPaletteMode(SettingsUtil.cycleOpt(Services.Theme.wallpaperPaletteModes, Services.Settings.wallpaperPaletteMode, dir));
+                }
+                return;
+            }
+            if (selectedIndex === root.animationStyleIndex) {
+                if (root.animationDropOpen) {
+                    if (dir < 0)
+                        root.closeDrop();
+                    else
+                        root.commitAnimationStyleCursor();
+                } else {
+                    Services.Settings.setPopupAnimationStyle(SettingsUtil.cycleOpt(Services.Theme.popupAnimationStyles, Services.Settings.popupAnimationStyle, dir));
                 }
                 return;
             }
@@ -471,6 +489,11 @@ BasePopup {
                     root.commitPaletteModeCursor();
                 else
                     root.togglePaletteModeDrop();
+            } else if (selectedIndex === root.animationStyleIndex) {
+                if (root.animationDropOpen)
+                    root.commitAnimationStyleCursor();
+                else
+                    root.toggleAnimationStyleDrop();
             } else if (selectedIndex === root.mouseInputBase + 2)
                 Services.Settings.setNaturalScroll(!Services.Settings.naturalScroll);
             return;
@@ -609,6 +632,19 @@ BasePopup {
         Services.Settings.setWallpaperPaletteMode(opts[Services.Theme.clamp(root.dropCursor, 0, opts.length - 1)]);
         root.closeDrop();
     }
+    function toggleAnimationStyleDrop(): void {
+        if (root.animationDropOpen) {
+            root.closeDrop();
+            return;
+        }
+        root.dropCursor = Math.max(0, Services.Theme.popupAnimationStyles.indexOf(Services.Settings.popupAnimationStyle));
+        root.openMenu = {kind: "animation"};
+    }
+    function commitAnimationStyleCursor(): void {
+        if (root.animationDropOpen)
+            Services.Settings.setPopupAnimationStyle(Services.Theme.popupAnimationStyles[Services.Theme.clamp(root.dropCursor, 0, Services.Theme.popupAnimationStyles.length - 1)]);
+        root.closeDrop();
+    }
     function toggleDrop(i: int): void {
         if (root.openDropdown === i)
             root.closeDrop();
@@ -691,8 +727,8 @@ BasePopup {
         root.commitMonMode(name, opts[Services.Theme.clamp(root.dropCursor, 0, opts.length - 1)]);
     }
 
-    readonly property int wpCols: root.width >= 680 ? 3 : root.width >= 400 ? 2 : 1
-    readonly property int wpCellH: Math.round((root.width - 2 * Services.Theme.popupPadding - 2 * root.wallWrapPad) / root.wpCols * 9 / 16) + 40
+    readonly property int wpCols: root.popupContentWidth >= 680 ? 3 : root.popupContentWidth >= 400 ? 2 : 1
+    readonly property int wpCellH: Math.round((root.popupContentWidth - 2 * Services.Theme.popupPadding - 2 * root.wallWrapPad) / root.wpCols * 9 / 16) + 40
     property int wpGap: 10
     property int wpCount: Services.Settings.wallpapers.length
     property int wpVisible: Math.min(root.wpCount, root.wpCols * 2)
@@ -703,8 +739,9 @@ BasePopup {
     property int wallWrapPad: 4
     readonly property int paletteEnabledIndex: root.wpInputBase
     readonly property int paletteModeIndex: root.wpInputBase + 1
-    readonly property int mouseInputBase: root.wpInputBase + 2
-    property int inputRows: 5
+    readonly property int animationStyleIndex: root.wpInputBase + 2
+    readonly property int mouseInputBase: root.wpInputBase + 3
+    property int inputRows: 6
     property int sectionH: 18
     property int enabledCount: Services.Monitors.enabledMonitors().length
     property int monFirst: 2
@@ -732,7 +769,7 @@ BasePopup {
     }
     function contentHeight(): int {
         if (root.tab === 0)
-            return root.sectionH + Services.Theme.popupSpacing + root.wallColH + (root.wpCount > 0 ? Services.Theme.popupSpacing + root.wallHintH : 0) + Services.Theme.popupSpacing + root.sectionH + Services.Theme.popupSpacing + root.paletteColH + Services.Theme.popupSpacing + root.sectionH + Services.Theme.popupSpacing + root.inputColH;
+            return root.sectionH + Services.Theme.popupSpacing + root.wallColH + (root.wpCount > 0 ? Services.Theme.popupSpacing + root.wallHintH : 0) + Services.Theme.popupSpacing + root.sectionH + Services.Theme.popupSpacing + root.paletteColH + Services.Theme.popupSpacing + root.sectionH + Services.Theme.popupSpacing + Services.Theme.rowHeight + Services.Theme.popupSpacing + root.sectionH + Services.Theme.popupSpacing + root.inputColH;
         if (root.tab === 1) {
             let h = root.sysIdleH + root.sysBattH + root.sysProfH + 3 * root.sectionH + 30 + 6 * Services.Theme.popupSpacing;
             return h;

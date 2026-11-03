@@ -16,7 +16,7 @@ PanelWindow {
     implicitHeight: Services.Theme.barHeight
     exclusiveZone: implicitHeight
     color: Services.Theme.barBg
-    BarDivider {}
+    BarDivider { screenName: slim.slimName }
     WlrLayershell.namespace: "qs-bar"
     readonly property string slimName: slim.targetScreen?.name ?? ""
     readonly property var mainScreen: Services.Monitors.mainScreen(Quickshell.screens)

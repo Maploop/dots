@@ -57,7 +57,7 @@ PanelWindow {
     implicitHeight: Services.Theme.barHeight
     exclusiveZone: implicitHeight
     color: Services.Theme.barBg
-    BarDivider {}
+    BarDivider { screenName: bar.mainName }
     WlrLayershell.namespace: "qs-bar"
 
     readonly property var bodyPanel: popups.bodyPanel

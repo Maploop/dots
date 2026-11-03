@@ -192,6 +192,7 @@ Column {
     Column {
         width: parent.width
         spacing: Services.Theme.listSpacing
+        z: popup.paletteDropOpen ? 100 : 0
         SettingsRow {
             title: "Wallpaper palette"
             value: Services.Settings.wallpaperPaletteEnabled ? "On" : "Off"
@@ -210,6 +211,7 @@ Column {
             Dropdown {
                 options: Services.Theme.wallpaperPaletteModes
                 current: Services.Settings.wallpaperPaletteMode
+                menuViewport: popup.settingsViewport
                 open: popup.paletteDropOpen
                 selected: popup.tab === 0 && popup.selectedIndex === popup.paletteModeIndex
                 cursor: popup.dropCursor
@@ -223,6 +225,39 @@ Column {
                     Services.Settings.setWallpaperPaletteMode(value);
                     popup.closeDrop();
                 }
+            }
+        }
+    }
+    Text {
+        width: parent.width
+        height: popup.sectionH
+        verticalAlignment: Text.AlignVCenter
+        text: "Popup animation"
+        color: Services.Theme.dim
+        font.family: Services.Theme.font
+        font.pixelSize: Services.Theme.px11
+    }
+    SettingsRow {
+        title: "Style"
+        selected: popup.tab === 0 && popup.selectedIndex === popup.animationStyleIndex
+        z: popup.animationDropOpen ? 100 : 0
+        onHovered: popup.hoverSelect(popup.animationStyleIndex)
+        Dropdown {
+            options: popup.animationLabels
+            current: popup.animationLabels[Math.max(0, Services.Theme.popupAnimationStyles.indexOf(Services.Settings.popupAnimationStyle))]
+            menuViewport: popup.settingsViewport
+            open: popup.animationDropOpen
+            selected: popup.tab === 0 && popup.selectedIndex === popup.animationStyleIndex
+            cursor: popup.dropCursor
+            onHeaderClicked: {
+                popup.selectedIndex = popup.animationStyleIndex;
+                popup.toggleAnimationStyleDrop();
+            }
+            onOptionHovered: index => popup.dropCursor = index
+            onOptionClicked: value => {
+                popup.selectedIndex = popup.animationStyleIndex;
+                Services.Settings.setPopupAnimationStyle(Services.Theme.popupAnimationStyles[popup.animationLabels.indexOf(value)]);
+                popup.closeDrop();
             }
         }
     }

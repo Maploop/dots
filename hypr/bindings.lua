@@ -71,7 +71,7 @@ end
 hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd("pavucontrol"))
 
 hl.bind(mainMod .. " + D", hl.dsp.global("qs:launcher"))
-hl.bind(mainMod .. " + ESCAPE ", hl.dsp.global("qs:lock", { locked = true }))
+-- hl.bind(mainMod .. " + ESCAPE ", hl.dsp.global("qs:lock", { locked = true }))
 hl.bind(mainMod .. " + PERIOD", hl.dsp.exec_cmd("rofimoji"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
@@ -92,3 +92,11 @@ hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(browser))
 hl.bind("Print", hl.dsp.global("qs:screenshot-area"))
 hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-full"))
 hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-window"))
+
+hl.bind(
+	"SUPER + O",
+	hl.dsp.window.set_prop({
+		prop = "opacity",
+		value = "1.0",
+	})
+)

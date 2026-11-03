@@ -65,6 +65,12 @@ Item {
     readonly property var mediaPopup: mediaLoader.item
 
     readonly property var allPopups: root.exclusivePopups
+    readonly property var attachedPopup: root.allPopups.find(p => p && p.visible && p.joinsBar && p.connectionRadius > 0) ?? null
+    onAttachedPopupChanged: Services.Bars.attachedPopup = root.attachedPopup
+    Component.onDestruction: {
+        if (Services.Bars.attachedPopup === root.attachedPopup)
+            Services.Bars.attachedPopup = null;
+    }
     readonly property var exclusivePopups: [controlPanelPopup, wifiPopup, bluetoothPopup, powerPopup, root.settingsPopup, root.launcherPopup, root.clipboardPopup, root.emojiPopup, root.trayPopup, root.mediaPopup]
     readonly property var rightPopups: root.allPopups.filter(p => p && p.anchorMode === "right")
 

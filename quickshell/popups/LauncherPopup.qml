@@ -7,6 +7,7 @@ BasePopup {
     id: root
     anchorMode: "middle"
     attachToBar: Services.Theme.launcherAttachedToBar
+    animationStyle: "current"
     focusTarget: search.input
     preferredWidth: Services.Theme.launcherWidth
     implicitHeight: 16 + Services.Theme.rowHeight + Services.Theme.popupSpacing * 2 + Services.Theme.listHeight(Services.Theme.listVisible) + hint.implicitHeight

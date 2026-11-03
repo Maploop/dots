@@ -2,17 +2,26 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland
+import "../components"
 import "../services" as Services
 PopupWindow {
     id: base
     required property var bar
     property real preferredWidth: Services.Theme.popupWidth
-    implicitWidth: Math.min(base.preferredWidth, base.availableWidth)
+    implicitWidth: Math.min(base.preferredWidth + 2 * base.connectionRadius, base.availableWidth)
+    default property alias popupContent: popupBody.data
+    readonly property real popupContentWidth: Math.max(1, base.width - 2 * base.connectionRadius)
     property string anchorMode: "middle"
     // Optional center point in the bar window for popups tied to a specific bar item.
     property real anchorCenterX: -1
     property bool attachToBar: true
     property int extraTop: 0
+    readonly property bool joinsBar: base.attachToBar && !base.anchorFullscreen && base.extraTop === 0 && Services.Theme.popupBarGap === 0
+    readonly property real connectionRadius: base.joinsBar ? Math.max(0, Math.min(Services.Theme.popupConnectionRadius, base.anchorWidth / 4)) : 0
+    property real openProgress: 1
+    property string animationStyle: Services.Theme.popupAnimationStyle
+    readonly property real animationDistance: base.animationStyle === "slide-from-top" ? base.height : base.attachToBar ? Services.Theme.popupSlideDistance : 0
+    readonly property real animationOffset: base.animationDistance * (1 - base.openProgress)
     property bool useGrab: true
     property bool preventClose: false
     readonly property bool pickerActive: (bar?.screenshotTool?.pickerActive) === true
@@ -117,42 +126,68 @@ PopupWindow {
     visible: false
     color: Services.Theme.transparent
     BackgroundEffect.blurRegion: Services.Theme.popupBlur ? popupBlurRegion : null
+    mask: popupBlurRegion
     Region {
         id: popupBlurRegion
-        item: popupBackground
+        // The same outline controls input and blur, including the transparent
+        // space outside each concave shoulder.
+        x: base.connectionRadius
+        width: base.popupContentWidth
+        height: popupViewport.height
         radius: Services.Theme.popupRadius
+        topLeftRadius: base.joinsBar ? 0 : Services.Theme.popupRadius
+        topRightRadius: base.joinsBar ? 0 : Services.Theme.popupRadius
+        Region {
+            width: base.width
+            height: Math.min(base.connectionRadius, popupViewport.height)
+            Region {
+                x: -base.connectionRadius
+                width: 2 * base.connectionRadius
+                height: 2 * base.connectionRadius
+                shape: RegionShape.Ellipse
+                intersection: Intersection.Subtract
+            }
+            Region {
+                x: base.width - base.connectionRadius
+                width: 2 * base.connectionRadius
+                height: 2 * base.connectionRadius
+                shape: RegionShape.Ellipse
+                intersection: Intersection.Subtract
+            }
+        }
     }
-    Rectangle {
-        id: popupBackground
+    Item {
+        id: popupViewport
         parent: base.contentItem
-        anchors.fill: parent
-        z: -1
-        radius: Services.Theme.popupRadius
-        color: Services.Theme.popupBg
-        border.color: Services.Theme.border
+        width: base.width
+        height: Math.max(0, base.height - base.animationOffset)
+        opacity: base.openProgress
+        clip: true
+        PopupSurface {
+            anchors.fill: parent
+            connectionRadius: base.connectionRadius
+        }
+    }
+    Item {
+        id: popupBody
+        parent: popupViewport
+        x: base.connectionRadius
+        y: -base.animationOffset
+        width: base.popupContentWidth
+        height: base.height
     }
     function startOpenTransition(): void {
         if (base.visible)
             openTransition.restart();
     }
-    ParallelAnimation {
+    NumberAnimation {
         id: openTransition
-        NumberAnimation {
-            target: base.contentItem
-            property: "opacity"
-            from: 0
-            to: 1
-            duration: Services.Theme.motionDuration
-            easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
-            target: base.contentItem
-            property: "scale"
-            from: 0.985
-            to: 1
-            duration: Services.Theme.motionDuration
-            easing.type: Easing.OutCubic
-        }
+        target: base
+        property: "openProgress"
+        from: 0
+        to: 1
+        duration: Services.Theme.motionDuration
+        easing.type: Easing.OutCubic
     }
     onPickerActiveChanged: {
         if (!base.pickerActive && base.visible && base.useGrab)
@@ -165,9 +200,7 @@ PopupWindow {
             grabTimer.stop();
             focusRetry.stop();
         } else {
-            base.contentItem.transformOrigin = base.attachToBar ? Item.Top : Item.Center;
-            base.contentItem.opacity = 0;
-            base.contentItem.scale = 0.985;
+            base.openProgress = 0;
             Qt.callLater(base.startOpenTransition);
             base.openedAt = Date.now();
             base.kickGrab();

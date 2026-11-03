@@ -7,8 +7,9 @@ BarIcon {
     anchors.verticalCenter: parent.verticalCenter
     readonly property bool hasUnread: Services.Notifs.unread > 0
     readonly property bool dnd: Services.Modes.dndActive
+    popupActive: root.bar.popupByName("control")?.visible ?? false
     glyph: root.dnd ? "" : ""
-    glyphColor: root.dnd ? Services.Theme.danger : root.hasUnread ? Services.Theme.accent : Services.Theme.dim
+    glyphColor: root.dnd ? Services.Theme.danger : root.hasUnread || root.popupActive ? Services.Theme.accent : Services.Theme.dim
     tipText: root.dnd ? "Do not disturb" : "Notifications"
     tipAnchor: bar
     onClicked: bar.togglePopup("control")

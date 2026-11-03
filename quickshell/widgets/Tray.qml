@@ -9,6 +9,7 @@ BarIcon {
     required property var bar
     anchors.verticalCenter: parent.verticalCenter
     readonly property bool expanded: root.bar.popupByName("tray")?.visible ?? false
+    popupActive: root.expanded
     readonly property ObjectModel trayModel: SystemTray.items
     visible: root.trayModel.values.length > 0
     glyph: root.expanded ? "󰅃" : "󰅀"
