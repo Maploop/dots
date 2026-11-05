@@ -82,40 +82,6 @@ hl.config({
 	},
 })
 
-hl.layer_rule({
-	name = "qs-bar-glass",
-	match = { namespace = "qs-bar" },
-	blur = true,
-	ignore_alpha = 0.1,
-	blur_popups = true,
-})
-
-hl.layer_rule({
-	name = "qs-picker-order",
-	match = { namespace = "qs-screenshot-picker" },
-	order = 10,
-})
-
-hl.layer_rule({
-	name = "qs-notifications-order",
-	match = { namespace = "qs-notifications" },
-	order = 20,
-})
-
-hl.layer_rule({
-	name = "qs-notifications-glass",
-	match = { namespace = "qs-notifications" },
-	blur = true,
-	ignore_alpha = 0.1,
-})
-
-hl.layer_rule({
-	name = "qs-osd-glass",
-	match = { namespace = "qs-osd" },
-	blur = true,
-	ignore_alpha = 0.1,
-})
-
 hl.window_rule({
 	name = "float-transparency",
 	match = { float = true },

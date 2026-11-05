@@ -4,6 +4,7 @@ local terminal = "foot"
 local fileManager = "nautilus"
 local browser = "librewolf"
 local secondMod = "SUPER + SHIFT"
+local ipc = "noctalia msg "
 
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 
@@ -70,28 +71,17 @@ end
 
 hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd("pavucontrol"))
 
-hl.bind(mainMod .. " + D", hl.dsp.global("qs:launcher"))
+hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"))
 -- hl.bind(mainMod .. " + ESCAPE ", hl.dsp.global("qs:lock", { locked = true }))
 hl.bind(mainMod .. " + PERIOD", hl.dsp.exec_cmd("rofimoji"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
-hl.bind(mainMod .. " + period", hl.dsp.global("qs:emoji"))
-hl.bind(mainMod .. " + comma", hl.dsp.global("qs-bar:settings"))
 
-hl.bind(mainMod .. " + A", hl.dsp.global("qs-bar:control"))
-hl.bind(mainMod .. " + C", hl.dsp.global("qs-bar:calendar"))
-
-hl.bind(secondMod .. " + Q", hl.dsp.global("qs-bar:power"))
-hl.bind(secondMod .. " + C", hl.dsp.global("qs:caffeine"))
-hl.bind(secondMod .. " + D", hl.dsp.global("qs:dnd"))
-hl.bind(mainMod .. " + CTRL + L", hl.dsp.global("qs:lock"), { locked = true })
-hl.bind(mainMod .. " + V", hl.dsp.global("qs:clipboard"))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(ipc .. "panel-toggle control-center"))
 
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(browser))
 
-hl.bind("Print", hl.dsp.global("qs:screenshot-area"))
-hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-full"))
-hl.bind(secondMod .. " + Print", hl.dsp.global("qs:screenshot-window"))
+hl.bind("Print", hl.dsp.exec_cmd(ipc .. "screenshot-region"))
 
 hl.bind(
 	"SUPER + O",
