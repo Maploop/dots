@@ -61,9 +61,13 @@ require("hypr.apps.telegram")
 require("hypr.apps.bitwarden")
 require("hypr.apps.xwaylandapps")
 require("hypr.apps.mpv")
+require("hypr.apps.spotify")
 
 -- Toggle config flags dynamically.
 --require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
+
+-- For Noctalia Color templates
+require("noctalia").apply_theme()
